@@ -1,37 +1,20 @@
-## Welcome to GitHub Pages
+# Wholesale MongoDB
 
-You can use the [editor on GitHub](https://github.com/yunpengn/Wholesale-MongoDB/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+This is the Wholesale project implemented with MongoDB. It is part of the requirements for the module [CS4224 Distributed Databases](https://nusmods.com/modules/CS4224/distributed-databases) at the [National University of Singapore](http://www.nus.edu.sg).
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+[This repository](https://github.com/yunpengn/Wholesale-MongoDB) presents our approach to the project. Our team consists of
 
-### Markdown
+- [Niu Yunpeng](https://github.com/yunpengn)
+- [Wang Junming](https://github.com/junming403)
+- [Xiang Hailin](https://github.com/Hailinx)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Setup Development Environment
 
-```markdown
-Syntax highlighted code block
+- Install the latest version of [IntelliJ IDEA](https://www.jetbrains.com/idea/).
+- Clone the repository by `git clone git@github.com:yunpengn/Wholesale-MongoDB.git`.
+- Click `Import Project` and select `build.gradle`.
+- Wait for Gradle to complete the setup.
 
-# Header 1
-## Header 2
-### Header 3
+## Licence
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/yunpengn/Wholesale-MongoDB/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+[GNU General Public Licence 3.0](LICENSE)
