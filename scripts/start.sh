@@ -7,4 +7,4 @@ project_path=$(dirname $(realpath $0))
 
 cd $project_path
 ../gradlew shadowJar
-java -jar build/libs/Wholesale-Cassandra-1.0-SNAPSHOT-all.jar
+java -jar build/libs/Wholesale-MongoDB-1.0-SNAPSHOT-all.jar
