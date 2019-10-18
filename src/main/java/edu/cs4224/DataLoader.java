@@ -71,11 +71,13 @@ public class DataLoader {
         readAndExecute("district", row -> {
             String[] data = row.split(",");
 
-            List<String> dataList = Arrays.asList(data);
-            dataList.add("0");
+            String[] appendedData = new String[data.length + 1];
+            for (int i = 0; i < data.length; i++) {
+                appendedData[i] = data[i];
+            }
+            appendedData[data.length] = "0";
 
-            District district = District.fromCSV(dataList.toArray(new String[0]));
-
+            District district = District.fromCSV(appendedData);
             District.getCollection(db).insertOne(district);
 
             Set<Integer> set = districtIDs.getOrDefault(district.getD_W_ID(), new HashSet<>());
