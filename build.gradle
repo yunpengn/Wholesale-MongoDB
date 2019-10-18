@@ -16,6 +16,7 @@ wrapper {
 
 dependencies {
     implementation (
+            'org.mongodb:mongodb-driver-sync:3.11.1',
             'com.google.code.gson:gson:2.8.6'
     )
     testImplementation(
