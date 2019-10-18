@@ -36,11 +36,12 @@ public class Main {
                 MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-        MongoClientSettings.builder()
+        MongoClientSettings settings = MongoClientSettings.builder()
                 .applyToClusterSettings(builder ->
                         builder.hosts(Arrays.asList(new ServerAddress("127.0.0.1", 28000))))
                 .build();
-        MongoClient mongoClient = MongoClients.create();
+        
+        MongoClient mongoClient = MongoClients.create(settings);
 
         db = mongoClient.getDatabase("wholesale").withCodecRegistry(pojoCodecRegistry);
     }
