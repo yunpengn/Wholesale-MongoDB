@@ -32,20 +32,17 @@ public class Main {
     }
 
     public void buildDriver() {
-        MongoClientSettings.builder()
-                .applyToClusterSettings(builder ->
-                        builder.hosts(Arrays.asList(new ServerAddress("127.0.0.1", 28000))))
-                .build();
-        MongoClient mongoClient = MongoClients.create();
-
-        MongoDatabase database = mongoClient.getDatabase("test");
-
         CodecRegistry pojoCodecRegistry = fromRegistries(
                 MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-        database.withCodecRegistry(pojoCodecRegistry);
+        MongoClientSettings.builder()
+                .applyToClusterSettings(builder ->
+                        builder.hosts(Arrays.asList(new ServerAddress("127.0.0.1", 28000))))
+                .codecRegistry(pojoCodecRegistry)
+                .build();
+        MongoClient mongoClient = MongoClients.create();
 
-        db = database;
+        db = mongoClient.getDatabase("test");
     }
 }
