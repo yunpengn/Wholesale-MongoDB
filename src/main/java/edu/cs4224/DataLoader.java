@@ -155,7 +155,7 @@ public class DataLoader {
     }
 
     private void stock() throws Exception {
-        System.out.println("load item");
+        System.out.println("load stock");
         final BatchLoader<Stock> batchLoader = new BatchLoader<>(Stock.getCollection(db));
 
         readAndExecute("stock", row -> {
