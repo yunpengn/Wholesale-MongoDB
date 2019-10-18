@@ -7,6 +7,7 @@ import edu.cs4224.pojo.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static edu.cs4224.Utils.Triple;
@@ -30,15 +31,19 @@ public class DataLoader {
     public void loadData() throws Exception {
         reset();
 
+        long startTime = System.nanoTime();
         // TODO set index before insert
         warehouse();
         district();
         customer();
-//        order_line();
+        order_line();
 //        customer_order();
 //        item();
 //        stock();
 //        appendNextDeliveryID();
+
+        System.out.printf("finish loading in %ds\n",
+                TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS));
     }
 
     public void reset() {
