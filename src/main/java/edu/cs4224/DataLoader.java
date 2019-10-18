@@ -36,7 +36,7 @@ public class DataLoader {
 
         // TODO set index before insert
         warehouse();
-//        district();
+        district();
 //        customer();
 //        order_line();
 //        customer_order();

@@ -37,7 +37,7 @@ public class CustomerOrder {
     }
 
     public static MongoCollection<CustomerOrder> getCollection(MongoDatabase db) {
-        return db.getCollection("customer_order", CustomerOrder.class);
+        return db.getCollection("order", CustomerOrder.class);
     }
 
     public static CustomerOrder fromCSV(String[] data, HashMap<Integer, OrderLineInfo> o_L_INFO) {
