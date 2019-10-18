@@ -11,4 +11,5 @@ sharding:
 storage:
   dbPath: /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/data/s5
 systemLog:
+  logAppend: true
   path: /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/log/s5.log

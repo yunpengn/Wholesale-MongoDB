@@ -95,7 +95,18 @@ create_all_shards() {
 
 # Creates the query routers on all machines.
 create_query_router() {
+  # Starts query router on each machine.
+  command="mongos --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/router.yml"
+  execute_command_on_all "$command"
 
+  # Adds 5 shards to the cluster.
+  command="echo 'Will add all shards to the cluster ...'"
+  command+=" && mongo 127.0.0.1:29000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/add-shards.js"
+
+  # Enables sharding on the database.
+  command+=" && echo 'Will enable sharding on database level ...'"
+  command+=" && mongo 127.0.0.1:29000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/enable-shard.js"
+  execute_command 0 "$command"
 }
 
 # Driver part.
