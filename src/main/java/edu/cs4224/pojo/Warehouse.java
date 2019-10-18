@@ -36,12 +36,12 @@ public class Warehouse {
     public static Warehouse fromCSV(String[] data) {
         return new Warehouse(
                 Integer.parseInt(data[0]),
-                data[1],
-                data[2],
-                data[3],
-                data[4],
-                data[5],
-                data[6],
+                (data[1]),
+                (data[2]),
+                (data[3]),
+                (data[4]),
+                (data[5]),
+                (data[6]),
                 Double.parseDouble(data[7]),
                 Double.parseDouble(data[8])
         );
