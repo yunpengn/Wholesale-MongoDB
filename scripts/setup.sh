@@ -7,8 +7,9 @@ SERVER_NODES=("xcnd25" "xcnd26" "xcnd27" "xcnd28" "xcnd29")
 execute_command() {
   machineID=$1
   current_command=$2
+  real_command="source /home/stuproj/cs4224f/.bash_profile && $current_command"
 
-  ssh ${SERVER_NODES[machineID]} $current_command
+  ssh ${SERVER_NODES[machineID]} $real_command
 }
 
 # Runs a given command on all machines.
