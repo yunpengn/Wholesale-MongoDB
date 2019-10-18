@@ -28,7 +28,7 @@ public class DataLoader {
     }
 
     private void warehouse() throws Exception {
-        readAndExecute("warehouse.csv", row -> {
+        readAndExecute("warehouse", row -> {
             String[] data = row.split(",");
             Warehouse.getCollection(db).insertOne(Warehouse.fromCSV(data));
         });

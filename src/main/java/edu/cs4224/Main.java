@@ -22,13 +22,13 @@ public class Main {
     }
 
     private void init(String[] args) throws Exception {
-        MongoClient client = buildDriver();
+        MongoClient client = createDriver();
 
         MongoDatabase db = client.getDatabase("wholesale");
 
         switch (args[0]) {
             case "run":
-                runTransactions(db);
+                runTransactions(db, args);
                 break;
             case "loaddata":
                 new DataLoader(db).loadData();
@@ -40,13 +40,11 @@ public class Main {
         client.close();
     }
 
-    private void runTransactions(MongoDatabase db) {
-        MongoCollection<Warehouse> warehouse = db.getCollection("warehouse", Warehouse.class);
+    private void runTransactions(MongoDatabase db, String[] args) {
 
-        warehouse.insertOne(new Warehouse(1, "name", "street1", "street2", "city", "state", "zip", 5, 6));
     }
 
-    public MongoClient buildDriver() {
+    private MongoClient createDriver() {
         CodecRegistry pojoCodecRegistry = fromRegistries(
                 MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));

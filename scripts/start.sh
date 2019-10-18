@@ -5,6 +5,24 @@ project_path=$(dirname $(dirname $(realpath $0)))
 #data_path="$project_path/data/data-files"
 
 
-cd $project_path
-./gradlew shadowJar
-java -jar build/libs/Wholesale-MongoDB-1.0-SNAPSHOT-all.jar
+run() {
+    cd $project_path
+    ./gradlew shadowJar
+    java -jar build/libs/Wholesale-MongoDB-1.0-SNAPSHOT-all.jar run
+}
+
+load_data() {
+    cd $project_path
+    ./gradlew shadowJar
+    java -jar build/libs/Wholesale-MongoDB-1.0-SNAPSHOT-all.jar loaddata
+}
+
+
+if [[ "$1" == "run" ]]; then
+    run
+elif [[ "$1" == "loaddata" ]]; then
+    load_data
+else
+    echo "unknown command"
+fi
+
