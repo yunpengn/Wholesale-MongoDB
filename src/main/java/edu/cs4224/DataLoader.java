@@ -36,13 +36,13 @@ public class DataLoader {
 
         // TODO set index before insert
         warehouse();
-        district();
-        customer();
-        order_line();
-        customer_order();
-        item();
-        stock();
-        appendNextDeliveryID();
+//        district();
+//        customer();
+//        order_line();
+//        customer_order();
+//        item();
+//        stock();
+//        appendNextDeliveryID();
     }
 
     public void reset() {
