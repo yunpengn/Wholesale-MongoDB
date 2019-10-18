@@ -29,15 +29,15 @@ public class DataLoader {
     }
 
     public void loadData() throws Exception {
-        reset();
+//        reset();
 
         long startTime = System.nanoTime();
         // TODO set index before insert
-        warehouse();
-        district();
-        customer();
+//        warehouse();
+//        district();
+//        customer();
         order_line();
-//        customer_order();
+        customer_order();
 //        item();
 //        stock();
 //        appendNextDeliveryID();
