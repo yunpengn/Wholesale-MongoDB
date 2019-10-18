@@ -16,7 +16,7 @@ public class CustomerOrder {
     private int O_D_ID;
     private int O_ID;
     private int O_C_ID;
-    private int O_CARRIER_ID;
+    private Integer O_CARRIER_ID; // this filed may be null
     private int O_OL_CNT;
     private int O_ALL_LOCAL;
     private Date O_ENTRY_D;
@@ -24,7 +24,7 @@ public class CustomerOrder {
     @BsonProperty(useDiscriminator = true)
     private HashMap<Integer, OrderLineInfo> O_L_INFO;
 
-    public CustomerOrder(int o_W_ID, int o_D_ID, int o_ID, int o_C_ID, int o_CARRIER_ID, int o_OL_CNT, int o_ALL_LOCAL, Date o_ENTRY_D, HashMap<Integer, OrderLineInfo> o_L_INFO) {
+    public CustomerOrder(int o_W_ID, int o_D_ID, int o_ID, int o_C_ID, Integer o_CARRIER_ID, int o_OL_CNT, int o_ALL_LOCAL, Date o_ENTRY_D, HashMap<Integer, OrderLineInfo> o_L_INFO) {
         O_W_ID = o_W_ID;
         O_D_ID = o_D_ID;
         O_ID = o_ID;
@@ -46,7 +46,7 @@ public class CustomerOrder {
                 Integer.parseInt(data[1]),
                 Integer.parseInt(data[2]),
                 Integer.parseInt(data[3]),
-                Integer.parseInt(data[4]),
+                data[4].equals("null") ? null : Integer.parseInt(data[4]),
                 Integer.parseInt(data[5]),
                 Integer.parseInt(data[6]),
                 Utils.parseDateFromString(data[7]),
@@ -86,11 +86,11 @@ public class CustomerOrder {
         O_C_ID = o_C_ID;
     }
 
-    public int getO_CARRIER_ID() {
+    public Integer getO_CARRIER_ID() {
         return O_CARRIER_ID;
     }
 
-    public void setO_CARRIER_ID(int o_CARRIER_ID) {
+    public void setO_CARRIER_ID(Integer o_CARRIER_ID) {
         O_CARRIER_ID = o_CARRIER_ID;
     }
 
