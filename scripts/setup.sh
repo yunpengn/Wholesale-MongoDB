@@ -110,6 +110,11 @@ create_query_router() {
   execute_command 0 "$command"
 }
 
+force_kill_all() {
+  command="pkill -f mongo && pkill -f mongod"
+  execute_command_on_all "$command"
+}
+
 # Driver part.
 if [[ "$1" == "setup" ]]; then
   echo "Begins to setup the 5 machines."
@@ -125,6 +130,9 @@ elif [[ "$1" == "create_cluster" ]]; then
 
   echo "Ends with the query routers."
   create_query_router
+elif [[ "$1" == "force_kill_all" ]]; then
+  echo "Will force kill all MongoDB instances"
+  force_kill_all
 else
     echo "Unknown command"
 fi
