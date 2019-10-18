@@ -62,9 +62,14 @@ create_config_server() {
   command+=" && mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s0.yml"
 
   # Executes the command.
+  for i in {0..2}; do
+    execute_command $i "$command"
+  done
+
+  # Initiates the replica set.
+  command="echo 'Will initiate the replica set ...'"
+  command+=" && mongo 0.0.0.0:28000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s0.js"
   execute_command 0 "$command"
-  execute_command 1 "$command"
-  execute_command 2 "$command"
 }
 
 # Driver part.
@@ -73,6 +78,7 @@ if [[ "$1" == "setup" ]]; then
   setup_mongo
 elif [[ "$1" == "create_cluster" ]]; then
   echo "Begins to create MongoDB cluster."
+  create_config_server
 else
     echo "Unknown command"
 fi
