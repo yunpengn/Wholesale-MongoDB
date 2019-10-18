@@ -90,7 +90,8 @@ create_all_shards() {
     port=$(( 28000 + $shardID ))
     command="echo 'Will initiate the replica set ...'"
     command+=" && mongo 127.0.0.1:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$shardID.js"
-    echo "$command"
+    machindID=$(( $shardID - 1 ))
+    execute_command $machineID "$command"
   done
 }
 
