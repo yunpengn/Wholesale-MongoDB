@@ -11,6 +11,7 @@ execute_command() {
   ssh ${SERVER_NODES[machineID]} $current_command
 }
 
+# Runs a given command on all machines.
 execute_command_on_all() {
   all_command=$1
 
@@ -19,6 +20,7 @@ execute_command_on_all() {
   done
 }
 
+# Runs the initial setup on all machines.
 setup_mongo() {
   # Removes the previous setup.
   command="echo 'Will remove files & folders created previously ...'"
@@ -49,12 +51,68 @@ setup_mongo() {
   execute_command_on_all "$command"
 }
 
+# Creates the replica set for config server.
+create_config_server() {
+  # Pulls the latest update from GitHub.
+  command="echo 'Will pull from GitHub ...'"
+  command+=" && cd /temp/cs4224f/Wholesale-MongoDB"
+  command+=" && git pull"
+
+  # Starts the config server with the provided configurations.
+  command+=" && mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s0.yml"
+
+  # Executes the command.
+  for i in {0..2}; do
+    execute_command $i "$command"
+  done
+
+  # Initiates the replica set.
+  command="echo 'Will initiate the replica set ...'"
+  command+=" && mongo 0.0.0.0:28000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s0.js"
+  execute_command 0 "$command"
+}
+
+# Creates the replica sets for 5 shards.
+create_all_shards() {
+  # Performs for each of the 5 shards.
+  for shardID in {0..4}; do
+    # Starts the server with the provided configurations.
+    command="mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s$i.yml"
+
+    # Executes the command for create 3 instances.
+    for i in {0..2}; do
+      machineID = $((($shardID + $i) % 5))
+      execute_command $machineID "$command"
+    done
+
+    # Initiates the replica set.
+    port = $(( 28001 + $shardID ))
+    command="echo 'Will initiate the replica set ...'"
+    command+=" && mongo 0.0.0.0:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$i.js"
+    execute_command $shardID "$command"
+  done
+}
+
+# Creates the query routers on all machines.
+create_query_router() {
+
+}
+
 # Driver part.
 if [[ "$1" == "setup" ]]; then
   echo "Begins to setup the 5 machines."
   setup_mongo
 elif [[ "$1" == "create_cluster" ]]; then
   echo "Begins to create MongoDB cluster."
+
+  echo "Starts with the replica set for config server."
+  create_config_server
+
+  echo "Continues with the replica sets for 5 shards."
+  create_all_shards
+
+  echo "Ends with the query routers."
+  create_query_router
 else
     echo "Unknown command"
 fi
