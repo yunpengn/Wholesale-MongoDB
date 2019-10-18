@@ -38,7 +38,7 @@ public class DataLoader {
 //        customer();
         order_line();
         customer_order();
-//        item();
+        item();
 //        stock();
 //        appendNextDeliveryID();
 
@@ -143,13 +143,15 @@ public class DataLoader {
 
     private void item() throws Exception {
         System.out.println("load item");
+        final BatchLoader<Item> batchLoader = new BatchLoader<>(Item.getCollection(db));
 
         readAndExecute("item", row -> {
             String[] data = row.split(",");
 
             Item item = Item.fromCSV(data, itemOrderMap.get(Integer.parseInt(data[0])));
-            Item.getCollection(db).insertOne(item);
+            batchLoader.load(item);
         });
+        batchLoader.flush();
     }
 
     private void stock() throws Exception {
