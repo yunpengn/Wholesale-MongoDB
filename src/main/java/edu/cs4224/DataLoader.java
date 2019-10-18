@@ -1,16 +1,12 @@
 package edu.cs4224;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import edu.cs4224.pojo.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static edu.cs4224.Utils.Triple;
@@ -56,17 +52,20 @@ public class DataLoader {
 
     private void warehouse() throws Exception {
         System.out.println("load warehouse");
+        final BatchLoader<Warehouse> batchLoader = new BatchLoader<>(Warehouse.getCollection(db));
 
         readAndExecute("warehouse", row -> {
             String[] data = row.split(",");
             Warehouse warehouse = Warehouse.fromCSV(data);
 
-            Warehouse.getCollection(db).insertOne(warehouse);
+            batchLoader.load(warehouse);
         });
+        batchLoader.flush();
     }
 
     private void district() throws Exception {
         System.out.println("load district");
+        final BatchLoader<District> batchLoader = new BatchLoader<>(District.getCollection(db));
 
         readAndExecute("district", row -> {
             String[] data = row.split(",");
@@ -78,23 +77,26 @@ public class DataLoader {
             appendedData[data.length] = "0";
 
             District district = District.fromCSV(appendedData);
-            District.getCollection(db).insertOne(district);
+            batchLoader.load(district);
 
             Set<Integer> set = districtIDs.getOrDefault(district.getD_W_ID(), new HashSet<>());
             set.add(district.getD_ID());
             districtIDs.put(district.getD_W_ID(), set);
         });
+        batchLoader.flush();
     }
 
     private void customer() throws Exception {
         System.out.println("load customer");
+        final BatchLoader<Customer> batchLoader = new BatchLoader<>(Customer.getCollection(db));
 
         readAndExecute("customer", row -> {
             String[] data = row.split(",");
 
             Customer customer = Customer.fromCSV(data);
-            Customer.getCollection(db).insertOne(customer);
+            batchLoader.load(customer);
         });
+        batchLoader.flush();
     }
 
     private void order_line() throws Exception {
@@ -185,4 +187,29 @@ public class DataLoader {
         }
     }
 
+    private static class BatchLoader<T> {
+        private static final int BUFFER_SIZE = 1000;
+
+        private final List<T> buffer;
+        private final MongoCollection<T> collection;
+
+        public BatchLoader(MongoCollection<T> collection) {
+            this.collection = collection;
+            this.buffer = new ArrayList<>(BUFFER_SIZE);
+        }
+
+        public void load(T t) {
+            buffer.add(t);
+
+            if (buffer.size() == BUFFER_SIZE) {
+                flush();
+            }
+        }
+
+        public void flush() {
+            collection.insertMany(buffer);
+
+            buffer.clear();
+        }
+    }
 }
