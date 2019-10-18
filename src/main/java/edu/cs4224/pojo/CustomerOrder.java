@@ -102,7 +102,7 @@ public class CustomerOrder {
         O_OL_CNT = o_OL_CNT;
     }
 
-    public double getO_ALL_LOCAL() {
+    public int getO_ALL_LOCAL() {
         return O_ALL_LOCAL;
     }
 
