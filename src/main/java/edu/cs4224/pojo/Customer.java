@@ -57,7 +57,7 @@ public class Customer {
     }
 
     public static MongoCollection<Customer> getCollection(MongoDatabase db) {
-        return db.getCollection("district", Customer.class);
+        return db.getCollection("customer", Customer.class);
     }
 
     public static Customer fromCSV(String[] data) {
