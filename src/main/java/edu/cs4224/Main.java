@@ -1,7 +1,51 @@
 package edu.cs4224;
 
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import edu.cs4224.pojo.Warehouse;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+
+import java.util.Arrays;
+
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 public class Main {
-  public static void main(String[] args) {
-    System.out.println("Hello world!");
-  }
+
+    private MongoDatabase db;
+
+    public static void main(String[] args) {
+        new Main().run();
+    }
+
+    private void run() {
+        buildDriver();
+
+        MongoCollection<Warehouse> warehouse = db.getCollection("warehouse", Warehouse.class);
+
+        warehouse.insertOne(new Warehouse(1, "name", "street1", "street2", "city", "state", "zip", 5, 6));
+    }
+
+    public void buildDriver() {
+        MongoClientSettings.builder()
+                .applyToClusterSettings(builder ->
+                        builder.hosts(Arrays.asList(new ServerAddress("127.0.0.1", 28000))))
+                .build();
+        MongoClient mongoClient = MongoClients.create();
+
+        MongoDatabase database = mongoClient.getDatabase("test");
+
+        CodecRegistry pojoCodecRegistry = fromRegistries(
+                MongoClientSettings.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+        database.withCodecRegistry(pojoCodecRegistry);
+
+        db = database;
+    }
 }
