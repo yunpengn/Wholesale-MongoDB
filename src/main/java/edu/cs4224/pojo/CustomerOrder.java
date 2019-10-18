@@ -94,7 +94,7 @@ public class CustomerOrder {
         O_CARRIER_ID = o_CARRIER_ID;
     }
 
-    public double getO_OL_CNT() {
+    public int getO_OL_CNT() {
         return O_OL_CNT;
     }
 
