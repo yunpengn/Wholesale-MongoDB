@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-project_path=$(dirname $(realpath $0))
+project_path=$(dirname $(dirname $(realpath $0)))
 #cql_path="$project_path/src/main/resources"
 #data_path="$project_path/data/data-files"
 

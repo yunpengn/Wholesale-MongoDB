@@ -34,7 +34,7 @@ public class Main {
     public void buildDriver() {
         CodecRegistry pojoCodecRegistry = fromRegistries(
                 MongoClientSettings.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+                fromProviders(PojoCodecProvider.builder().register("edu.cs4224.pojo").build()));
 
         MongoClientSettings.builder()
                 .applyToClusterSettings(builder ->
