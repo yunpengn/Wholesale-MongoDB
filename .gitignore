@@ -28,6 +28,7 @@ hs_err_pid*
 .idea/
 data/
 out/
+temp/
 
 # Gradle
 .gradle/
