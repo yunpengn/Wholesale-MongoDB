@@ -188,7 +188,7 @@ public class DataLoader {
     }
 
     private static class BatchLoader<T> {
-        private static final int BUFFER_SIZE = 1000;
+        private static final int BUFFER_SIZE = 10000;
 
         private final List<T> buffer;
         private final MongoCollection<T> collection;
@@ -207,9 +207,10 @@ public class DataLoader {
         }
 
         public void flush() {
-            collection.insertMany(buffer);
-
-            buffer.clear();
+            if (!buffer.isEmpty()) {
+                collection.insertMany(buffer);
+                buffer.clear();
+            }
         }
     }
 }
