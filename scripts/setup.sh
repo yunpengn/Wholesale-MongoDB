@@ -21,17 +21,21 @@ execute_command_on_all() {
 
 setup_mongo() {
   # Removes the previous setup.
-  command="cd /temp/cs4224f/"
+  command="echo 'Will remove files & folders created previously ...'"
+  command+=" && cd /temp/cs4224f/"
+  command+=" && rm -f mongodb-linux-x86_64-rhel70-4.2.0.tgz*"
   command+=" && rm -rf mongodb-linux-x86_64-rhel70-4.2.0/"
   command+=" && rm -rf Wholesale-MongoDB/"
 
   # Download mongo package and clone the repository.
-  command+=" && wget –q https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-4.2.0.tgz"
-  command+=" && tar -zxvf mongodb-linux-x86_64-rhel70-4.2.0.tgz"
+  command+=" && echo 'Will download MongoDB and clone from GitHub ...'"
+  command+=" && wget --quiet https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-4.2.0.tgz"
+  command+=" && tar -zxf mongodb-linux-x86_64-rhel70-4.2.0.tgz"
   command+=" && rm mongodb-linux-x86_64-rhel70-4.2.0.tgz"
-  command+=" && git clone git@github.com:yunpengn/Wholesale-MongoDB.git"
+  command+=" && git clone --quiet git@github.com:yunpengn/Wholesale-MongoDB.git"
 
   # Create folders to store data and log.
+  command+=" && echo 'Will create folders ...'"
   command+=" && mkdir /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/data/"
   command+=" && mkdir /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/data/s0/"
   command+=" && mkdir /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/data/s1/"
