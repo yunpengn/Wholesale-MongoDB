@@ -7,5 +7,6 @@ processManagement:
 sharding:
   configDB: s0/xcnd25.comp.nus.edu.sg:28000,xcnd26.comp.nus.edu.sg:28000,xcnd27.comp.nus.edu.sg:28000
 systemLog:
+  destination: file
   logAppend: true
   path: /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/log/router.log

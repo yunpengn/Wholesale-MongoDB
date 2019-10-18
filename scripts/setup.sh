@@ -56,7 +56,7 @@ create_config_server() {
   # Pulls the latest update from GitHub.
   command="echo 'Will pull from GitHub ...'"
   command+=" && cd /temp/cs4224f/Wholesale-MongoDB"
-  command+=" && git pull"
+  command+=" && git pull --quiet"
 
   # Starts the config server with the provided configurations.
   command+=" && mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s0.yml"
