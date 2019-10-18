@@ -118,13 +118,13 @@ elif [[ "$1" == "create_cluster" ]]; then
   echo "Begins to create MongoDB cluster."
 
   echo "Starts with the replica set for config server."
-#  create_config_server
+  create_config_server
 
   echo "Continues with the replica sets for 5 shards."
   create_all_shards
 
   echo "Ends with the query routers."
-#  create_query_router
+  create_query_router
 else
     echo "Unknown command"
 fi
