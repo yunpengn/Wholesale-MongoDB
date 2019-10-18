@@ -1,3 +1,5 @@
+use wholesale;
+
 // Enables sharding on the database level.
 sh.enableSharding("wholesale");
 
