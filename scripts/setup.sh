@@ -76,21 +76,21 @@ create_config_server() {
 # Creates the replica sets for 5 shards.
 create_all_shards() {
   # Performs for each of the 5 shards.
-  for shardID in {0..4}; do
+  for shardID in {1..5}; do
     # Starts the server with the provided configurations.
-    command="mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s$i.yml"
+    command="mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s$shardID.yml"
 
     # Executes the command for create 3 instances.
     for i in {0..2}; do
-      machineID = $((($shardID + $i) % 5))
+      machineID=$((($shardID + $i - 1) % 5))
       execute_command $machineID "$command"
     done
 
     # Initiates the replica set.
-    port = $(( 28001 + $shardID ))
+    port=$(( 28000 + $shardID ))
     command="echo 'Will initiate the replica set ...'"
-    command+=" && mongo 127.0.0.1:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$i.js"
-    execute_command $shardID "$command"
+    command+=" && mongo 127.0.0.1:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$shardID.js"
+    echo "$command"
   done
 }
 
@@ -118,13 +118,13 @@ elif [[ "$1" == "create_cluster" ]]; then
   echo "Begins to create MongoDB cluster."
 
   echo "Starts with the replica set for config server."
-  create_config_server
+#  create_config_server
 
   echo "Continues with the replica sets for 5 shards."
   create_all_shards
 
   echo "Ends with the query routers."
-  create_query_router
+#  create_query_router
 else
     echo "Unknown command"
 fi
