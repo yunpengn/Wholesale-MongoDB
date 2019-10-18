@@ -122,7 +122,7 @@ public class DataLoader {
 
     private void customer_order() throws Exception {
         System.out.println("load customer_order");
-        final BatchLoader<CustomerOrder> batchLoader = new BatchLoader<>(CustomerOrder.getCollection(db));
+//        final BatchLoader<CustomerOrder> batchLoader = new BatchLoader<>(CustomerOrder.getCollection(db));
 
         readAndExecute("order", row -> {
             String[] data = row.split(",");
@@ -130,7 +130,7 @@ public class DataLoader {
             HashMap<String, OrderLineInfo> infoList = orderLine.get(new Triple<>(data[0], data[1], data[2]));
 
             CustomerOrder customerOrder = CustomerOrder.fromCSV(data, infoList);
-            batchLoader.load(customerOrder);
+//            batchLoader.load(customerOrder);
 
             for (OrderLineInfo info : infoList.values()) {
                 HashSet<String> set = itemOrderMap.getOrDefault(info.getOL_I_ID(), new HashSet<>());
@@ -138,7 +138,7 @@ public class DataLoader {
                 itemOrderMap.put(info.getOL_I_ID(), set);
             }
         });
-        batchLoader.flush();
+//        batchLoader.flush();
     }
 
     private void item() throws Exception {
@@ -156,13 +156,15 @@ public class DataLoader {
 
     private void stock() throws Exception {
         System.out.println("load item");
+        final BatchLoader<Stock> batchLoader = new BatchLoader<>(Stock.getCollection(db));
 
         readAndExecute("stock", row -> {
             String[] data = row.split(",");
 
             Stock stock = Stock.fromCSV(data);
-            Stock.getCollection(db).insertOne(stock);
+            batchLoader.load(stock);
         });
+        batchLoader.flush();
     }
 
     private void appendNextDeliveryID() {

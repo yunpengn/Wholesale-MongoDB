@@ -33,7 +33,7 @@ public class Item {
         return new Item(
                 Integer.parseInt(data[0]),
                 (data[1]),
-                Integer.parseInt(data[2]),
+                Double.parseDouble(data[2]),
                 Integer.parseInt(data[3]),
                 (data[4]),
                 i_O_ID_LIST
