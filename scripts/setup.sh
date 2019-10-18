@@ -90,7 +90,8 @@ create_all_shards() {
     port=$(( 28000 + $shardID ))
     command="echo 'Will initiate the replica set ...'"
     command+=" && mongo 127.0.0.1:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$shardID.js"
-    echo "$command"
+    machindID=$(( $shardID - 1 ))
+    execute_command $machineID "$command"
   done
 }
 
@@ -106,8 +107,14 @@ create_query_router() {
 
   # Enables sharding on the database & collections.
   command+=" && echo 'Will enable sharding on the database & collections ...'"
-  command+=" && mongo 127.0.0.1:29000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/enable-shard.js"
+  command+=" && mongo 127.0.0.1:29000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/enable-shard.jsm"
   execute_command 0 "$command"
+}
+
+# Forces kill all MongoDB server instances and all connections via Mongo Shell.
+force_kill_all() {
+  command="pkill -f mongo && pkill -f mongod"
+  execute_command_on_all "$command"
 }
 
 # Driver part.
@@ -125,6 +132,9 @@ elif [[ "$1" == "create_cluster" ]]; then
 
   echo "Ends with the query routers."
   create_query_router
+elif [[ "$1" == "force_kill_all" ]]; then
+  echo "Will force kill all MongoDB instances"
+  force_kill_all
 else
     echo "Unknown command"
 fi
