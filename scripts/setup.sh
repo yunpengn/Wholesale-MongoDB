@@ -68,7 +68,7 @@ create_config_server() {
 
   # Initiates the replica set.
   command="echo 'Will initiate the replica set ...'"
-  command+=" && mongo 0.0.0.0:28000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s0.js"
+  command+=" && mongo 127.0.0.1:28000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s0.js"
   execute_command 0 "$command"
 }
 
@@ -88,7 +88,7 @@ create_all_shards() {
     # Initiates the replica set.
     port = $(( 28001 + $shardID ))
     command="echo 'Will initiate the replica set ...'"
-    command+=" && mongo 0.0.0.0:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$i.js"
+    command+=" && mongo 127.0.0.1:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$i.js"
     execute_command $shardID "$command"
   done
 }
