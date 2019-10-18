@@ -34,15 +34,14 @@ public class Main {
     public void buildDriver() {
         CodecRegistry pojoCodecRegistry = fromRegistries(
                 MongoClientSettings.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().register("edu.cs4224.pojo").build()));
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         MongoClientSettings.builder()
                 .applyToClusterSettings(builder ->
                         builder.hosts(Arrays.asList(new ServerAddress("127.0.0.1", 28000))))
-                .codecRegistry(pojoCodecRegistry)
                 .build();
         MongoClient mongoClient = MongoClients.create();
 
-        db = mongoClient.getDatabase("test");
+        db = mongoClient.getDatabase("wholesale").withCodecRegistry(pojoCodecRegistry);
     }
 }

@@ -1,6 +1,10 @@
 package edu.cs4224.pojo;
 
+import org.bson.codecs.pojo.annotations.*;
+
+@BsonDiscriminator
 public class Warehouse {
+
     private int W_ID;
     private String W_NAME;
     private String W_STREET_1;
