@@ -11,6 +11,7 @@ execute_command() {
   ssh ${SERVER_NODES[machineID]} $current_command
 }
 
+# Runs a given command on all machines.
 execute_command_on_all() {
   all_command=$1
 
@@ -19,6 +20,7 @@ execute_command_on_all() {
   done
 }
 
+# Runs the initial setup on all machines.
 setup_mongo() {
   # Removes the previous setup.
   command="echo 'Will remove files & folders created previously ...'"
@@ -47,6 +49,22 @@ setup_mongo() {
 
   # Executes the command.
   execute_command_on_all "$command"
+}
+
+# Creates the replica set for config server.
+create_config_server() {
+  # Pulls the latest update from GitHub.
+  command="echo 'Will pull from GitHub ...'"
+  command+=" && cd /temp/cs4224f/Wholesale-MongoDB"
+  command+=" && git pull"
+
+  # Starts the config server with the provided configurations.
+  command+=" && mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s0.yml"
+
+  # Executes the command.
+  execute_command 0 "$command"
+  execute_command 1 "$command"
+  execute_command 2 "$command"
 }
 
 # Driver part.
