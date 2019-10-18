@@ -17,7 +17,7 @@ public class DataLoader {
     private final MongoDatabase db;
 
     private final Map<Integer, Set<Integer>> districtIDs;
-    private final Map<Triple<String, String, String>, HashMap<Integer, OrderLineInfo>> orderLine;
+    private final Map<Triple<String, String, String>, HashMap<String, OrderLineInfo>> orderLine;
     private final Map<Integer, HashSet<String>> itemOrderMap;
 
     public DataLoader(MongoDatabase db) {
@@ -112,9 +112,8 @@ public class DataLoader {
 
             Triple<String, String, String> key = new Triple<>(data[0], data[1], data[2]);
 
-            HashMap<Integer, OrderLineInfo> infoList = orderLine.getOrDefault(key, new HashMap<>());
-            infoList.put(
-                    Integer.parseInt(data[3]),
+            HashMap<String, OrderLineInfo> infoList = orderLine.getOrDefault(key, new HashMap<>());
+            infoList.put(data[3],
                     OrderLineInfo.fromCSV(Arrays.copyOfRange(data, 4, data.length - 1))
             );
             orderLine.put(key, infoList);
@@ -128,7 +127,7 @@ public class DataLoader {
         readAndExecute("order", row -> {
             String[] data = row.split(",");
 
-            HashMap<Integer, OrderLineInfo> infoList = orderLine.get(new Triple<>(data[0], data[1], data[2]));
+            HashMap<String, OrderLineInfo> infoList = orderLine.get(new Triple<>(data[0], data[1], data[2]));
 
             CustomerOrder customerOrder = CustomerOrder.fromCSV(data, infoList);
             batchLoader.load(customerOrder);

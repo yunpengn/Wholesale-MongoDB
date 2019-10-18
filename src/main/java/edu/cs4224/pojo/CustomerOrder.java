@@ -22,9 +22,9 @@ public class CustomerOrder {
     private Date O_ENTRY_D;
 
     @BsonProperty(useDiscriminator = true)
-    private HashMap<Integer, OrderLineInfo> O_L_INFO;
+    private HashMap<String, OrderLineInfo> O_L_INFO;
 
-    public CustomerOrder(int o_W_ID, int o_D_ID, int o_ID, int o_C_ID, Integer o_CARRIER_ID, int o_OL_CNT, int o_ALL_LOCAL, Date o_ENTRY_D, HashMap<Integer, OrderLineInfo> o_L_INFO) {
+    public CustomerOrder(int o_W_ID, int o_D_ID, int o_ID, int o_C_ID, Integer o_CARRIER_ID, int o_OL_CNT, int o_ALL_LOCAL, Date o_ENTRY_D, HashMap<String, OrderLineInfo> o_L_INFO) {
         O_W_ID = o_W_ID;
         O_D_ID = o_D_ID;
         O_ID = o_ID;
@@ -40,7 +40,7 @@ public class CustomerOrder {
         return db.getCollection("order", CustomerOrder.class);
     }
 
-    public static CustomerOrder fromCSV(String[] data, HashMap<Integer, OrderLineInfo> o_L_INFO) {
+    public static CustomerOrder fromCSV(String[] data, HashMap<String, OrderLineInfo> o_L_INFO) {
         return new CustomerOrder(
                 Integer.parseInt(data[0]),
                 Integer.parseInt(data[1]),
@@ -118,11 +118,11 @@ public class CustomerOrder {
         O_ENTRY_D = o_ENTRY_D;
     }
 
-    public HashMap<Integer, OrderLineInfo> getO_L_INFO() {
+    public HashMap<String, OrderLineInfo> getO_L_INFO() {
         return O_L_INFO;
     }
 
-    public void setO_L_INFO(HashMap<Integer, OrderLineInfo> o_L_INFO) {
+    public void setO_L_INFO(HashMap<String, OrderLineInfo> o_L_INFO) {
         O_L_INFO = o_L_INFO;
     }
 }
