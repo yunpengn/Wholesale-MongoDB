@@ -2,7 +2,8 @@ package edu.cs4224.pojo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.bson.codecs.pojo.annotations.*;
+
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @BsonDiscriminator
 public class Warehouse {

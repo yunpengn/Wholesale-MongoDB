@@ -103,8 +103,8 @@ create_query_router() {
   command="echo 'Will add all shards to the cluster ...'"
   command+=" && mongo 127.0.0.1:29000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/add-shards.js"
 
-  # Enables sharding on the database.
-  command+=" && echo 'Will enable sharding on database level ...'"
+  # Enables sharding on the database & collections.
+  command+=" && echo 'Will enable sharding on the database & collections ...'"
   command+=" && mongo 127.0.0.1:29000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/enable-shard.js"
   execute_command 0 "$command"
 }
