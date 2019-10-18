@@ -1,5 +1,7 @@
 package edu.cs4224.pojo;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.bson.codecs.pojo.annotations.*;
 
 @BsonDiscriminator
@@ -25,6 +27,24 @@ public class Warehouse {
         W_ZIP = w_ZIP;
         W_TAX = w_TAX;
         W_YTD = w_YTD;
+    }
+
+    public static MongoCollection<Warehouse> getCollection(MongoDatabase db) {
+        return db.getCollection("warehouse", Warehouse.class);
+    }
+
+    public static Warehouse fromCSV(String[] data) {
+        return new Warehouse(
+                Integer.parseInt(data[0]),
+                data[1],
+                data[2],
+                data[3],
+                data[4],
+                data[5],
+                data[6],
+                Double.parseDouble(data[7]),
+                Double.parseDouble(data[8])
+        );
     }
 
     public int getW_ID() {

@@ -17,21 +17,36 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class Main {
 
-    private MongoDatabase db;
-
-    public static void main(String[] args) {
-        new Main().run();
+    public static void main(String[] args) throws Exception {
+        new Main().init(args);
     }
 
-    private void run() {
-        buildDriver();
+    private void init(String[] args) throws Exception {
+        MongoClient client = buildDriver();
 
+        MongoDatabase db = client.getDatabase("wholesale");
+
+        switch (args[0]) {
+            case "run":
+                runTransactions(db);
+                break;
+            case "loaddata":
+                new DataLoader(db).loadData();
+                break;
+            default:
+                throw new RuntimeException("unknown argument");
+        }
+
+        client.close();
+    }
+
+    private void runTransactions(MongoDatabase db) {
         MongoCollection<Warehouse> warehouse = db.getCollection("warehouse", Warehouse.class);
 
         warehouse.insertOne(new Warehouse(1, "name", "street1", "street2", "city", "state", "zip", 5, 6));
     }
 
-    public void buildDriver() {
+    public MongoClient buildDriver() {
         CodecRegistry pojoCodecRegistry = fromRegistries(
                 MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
@@ -39,10 +54,9 @@ public class Main {
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyToClusterSettings(builder ->
                         builder.hosts(Arrays.asList(new ServerAddress("127.0.0.1", 28000))))
+                .codecRegistry(pojoCodecRegistry)
                 .build();
-        
-        MongoClient mongoClient = MongoClients.create(settings);
 
-        db = mongoClient.getDatabase("wholesale").withCodecRegistry(pojoCodecRegistry);
+        return MongoClients.create(settings);
     }
 }
