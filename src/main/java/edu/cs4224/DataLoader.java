@@ -74,7 +74,7 @@ public class DataLoader {
             List<String> dataList = Arrays.asList(data);
             dataList.add("0");
 
-            District district = District.fromCSV(dataList.toArray(String[]::new));
+            District district = District.fromCSV(dataList.toArray(new String[0]));
 
             District.getCollection(db).insertOne(district);
 
