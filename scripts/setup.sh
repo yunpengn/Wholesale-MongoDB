@@ -111,6 +111,7 @@ create_query_router() {
   execute_command 0 "$command"
 }
 
+# Forces kill all MongoDB server instances and all connections via Mongo Shell.
 force_kill_all() {
   command="pkill -f mongo && pkill -f mongod"
   execute_command_on_all "$command"
