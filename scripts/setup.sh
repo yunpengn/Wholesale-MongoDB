@@ -7,8 +7,9 @@ SERVER_NODES=("xcnd25" "xcnd26" "xcnd27" "xcnd28" "xcnd29")
 execute_command() {
   machineID=$1
   current_command=$2
+  real_command="source /home/stuproj/cs4224f/.bash_profile && $current_command"
 
-  ssh ${SERVER_NODES[machineID]} $current_command
+  ssh ${SERVER_NODES[machineID]} $real_command
 }
 
 # Runs a given command on all machines.
@@ -56,7 +57,7 @@ create_config_server() {
   # Pulls the latest update from GitHub.
   command="echo 'Will pull from GitHub ...'"
   command+=" && cd /temp/cs4224f/Wholesale-MongoDB"
-  command+=" && git pull"
+  command+=" && git pull --quiet"
 
   # Starts the config server with the provided configurations.
   command+=" && mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s0.yml"
@@ -68,34 +69,45 @@ create_config_server() {
 
   # Initiates the replica set.
   command="echo 'Will initiate the replica set ...'"
-  command+=" && mongo 0.0.0.0:28000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s0.js"
+  command+=" && mongo 127.0.0.1:28000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s0.js"
   execute_command 0 "$command"
 }
 
 # Creates the replica sets for 5 shards.
 create_all_shards() {
   # Performs for each of the 5 shards.
-  for shardID in {0..4}; do
+  for shardID in {1..5}; do
     # Starts the server with the provided configurations.
-    command="mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s$i.yml"
+    command="mongod --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/s$shardID.yml"
 
     # Executes the command for create 3 instances.
     for i in {0..2}; do
-      machineID = $((($shardID + $i) % 5))
+      machineID=$((($shardID + $i - 1) % 5))
       execute_command $machineID "$command"
     done
 
     # Initiates the replica set.
-    port = $(( 28001 + $shardID ))
+    port=$(( 28000 + $shardID ))
     command="echo 'Will initiate the replica set ...'"
-    command+=" && mongo 0.0.0.0:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$i.js"
-    execute_command $shardID "$command"
+    command+=" && mongo 127.0.0.1:$port < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/init-s$shardID.js"
+    echo "$command"
   done
 }
 
 # Creates the query routers on all machines.
 create_query_router() {
+  # Starts query router on each machine.
+  command="mongos --config /temp/cs4224f/Wholesale-MongoDB/scripts/mongod-config/router.yml"
+  execute_command_on_all "$command"
 
+  # Adds 5 shards to the cluster.
+  command="echo 'Will add all shards to the cluster ...'"
+  command+=" && mongo 127.0.0.1:29000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/add-shards.js"
+
+  # Enables sharding on the database & collections.
+  command+=" && echo 'Will enable sharding on the database & collections ...'"
+  command+=" && mongo 127.0.0.1:29000 < /temp/cs4224f/Wholesale-MongoDB/scripts/mongo-scripts/enable-shard.js"
+  execute_command 0 "$command"
 }
 
 # Driver part.
