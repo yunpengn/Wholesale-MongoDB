@@ -29,16 +29,16 @@ public class DataLoader {
     }
 
     public void loadData() throws Exception {
-//        reset();
+        reset();
 
         long startTime = System.nanoTime();
         // TODO set index before insert
-//        warehouse();
-//        district();
-//        customer();
-//        order_line();
-//        customer_order();
-//        item();
+        warehouse();
+        district();
+        customer();
+        order_line();
+        customer_order();
+        item();
         stock();
 //        appendNextDeliveryID();
 
