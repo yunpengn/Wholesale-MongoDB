@@ -51,7 +51,7 @@ public class Main {
 
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyToClusterSettings(builder ->
-                        builder.hosts(Arrays.asList(new ServerAddress("127.0.0.1", 28000))))
+                        builder.hosts(Arrays.asList(new ServerAddress("127.0.0.1", 29000))))
                 .codecRegistry(pojoCodecRegistry)
                 .build();
 
