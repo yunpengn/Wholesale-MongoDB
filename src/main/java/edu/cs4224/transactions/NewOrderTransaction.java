@@ -4,6 +4,7 @@ import com.mongodb.client.MongoDatabase;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,18 @@ public class NewOrderTransaction extends BaseTransaction {
   }
 
   @Override public void execute(final String[] dataLines) {
+      List<Integer> itemIds = new ArrayList<>();
+      List<Integer> supplierWarehouse = new ArrayList<>();
+      List<Integer> quantity = new ArrayList<>();
 
+      for (String dataLine: dataLines) {
+          String[] parts = dataLine.split(",");
+          itemIds.add(Integer.parseInt(parts[0]));
+          supplierWarehouse.add(Integer.parseInt(parts[1]));
+          quantity.add(Integer.parseInt(parts[2]));
+      }
+
+      createNewOrder(itemIds, supplierWarehouse, quantity);
   }
 
   private void createNewOrder(List<Integer> itemIds, List<Integer> supplierWareHouse, List<Integer> quantity) {
