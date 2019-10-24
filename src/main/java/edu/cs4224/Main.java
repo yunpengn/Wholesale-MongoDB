@@ -8,6 +8,7 @@ import com.mongodb.client.MongoDatabase;
 
 import edu.cs4224.transactions.BaseTransaction;
 import edu.cs4224.transactions.DeliveryTransaction;
+import edu.cs4224.transactions.FinalStateTransaction;
 import edu.cs4224.transactions.NewOrderTransaction;
 import edu.cs4224.transactions.OrderStatusTransaction;
 import edu.cs4224.transactions.PaymentTransaction;
@@ -20,8 +21,10 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -119,6 +122,61 @@ public class Main {
             elapsedTime = txEnd - txStart;
             latency.add(elapsedTime);
         }
+        end = System.nanoTime();
+
+        // Generates the performance report.
+        elapsedTime = TimeUnit.SECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+        generatePerformanceReport(latency, elapsedTime);
+
+        // Generates the final state report.
+        BaseTransaction transaction = new FinalStateTransaction(db, new String[0]);
+        transaction.execute(new String[0]);
+
+        // Closes the opened resources.
+        scanner.close();
+    }
+
+    private void generatePerformanceReport(List<Long> latency, long totalTime) {
+        // Some magic.
+        totalTime = Math.max(totalTime, 1);
+
+        // Performs some mathematics here.
+        Collections.sort(latency);
+        int count = latency.size();
+        long sum = latency.stream().mapToLong(a -> a).sum();
+
+        System.err.println("\n======================================================================");
+        System.err.println("Performance report: ");
+        System.err.printf("Total number of transactions processed: %d\n", count);
+        System.err.printf("Total elapsed time: %ds\n", totalTime);
+        System.err.printf("Transaction throughput: %d per second\n", count / totalTime);
+        System.err.printf("Average transaction latency: %dms\n", toMs(sum / count));
+        System.err.printf("Median transaction latency: %dms\n", toMs(getMedian(latency)));
+        System.err.printf("95th percentile transaction latency: %dms\n", toMs(getPercentile(latency, 95)));
+        System.err.printf("99th percentile transaction latency: %dms\n", toMs(getPercentile(latency, 99)));
+        System.err.println("======================================================================");
+    }
+
+    private long toMs(long nanoSeconds) {
+        return TimeUnit.MILLISECONDS.convert(nanoSeconds, TimeUnit.NANOSECONDS);
+    }
+
+    private long getMedian(List<Long> list) {
+        long mid = list.get(list.size() / 2);
+        if (list.size() % 2 != 0) {
+            return mid;
+        } else {
+            long mid2 = list.get(list.size() / 2 - 1);
+            return (mid + mid2) / 2;
+        }
+    }
+
+    /**
+     * Assumes the input list is already sorted.
+     */
+    private long getPercentile(List<Long> list, int percentile) {
+        int i = list.size() * percentile / 100;
+        return list.get(i);
     }
 
     private MongoClient createDriver() {
