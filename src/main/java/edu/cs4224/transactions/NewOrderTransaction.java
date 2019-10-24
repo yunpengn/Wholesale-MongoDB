@@ -1,6 +1,9 @@
 package edu.cs4224.transactions;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import edu.cs4224.pojo.Customer;
+import org.bson.Document;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -47,6 +50,6 @@ public class NewOrderTransaction extends BaseTransaction {
   }
 
   private void createNewOrder(List<Integer> itemIds, List<Integer> supplierWareHouse, List<Integer> quantity) {
-
+      MongoCollection<Customer> collection = Customer.getCollection(db);
   }
 }
