@@ -70,9 +70,9 @@ public class Main {
             DEFAULT_READ_CONCERN = ReadConcern.MAJORITY;
             DEFAULT_WRITE_CONCERN = WriteConcern.MAJORITY;
             break;
-        case "ONE_FIVE":
+        case "ONE_THREE":
             DEFAULT_READ_CONCERN = ReadConcern.LOCAL;
-            DEFAULT_WRITE_CONCERN = new WriteConcern(3);
+            DEFAULT_WRITE_CONCERN = WriteConcern.W3;
             break;
         default:
             throw new InvalidParameterException("Invalid consistency level given.");
