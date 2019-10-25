@@ -52,7 +52,7 @@ setup_mongo() {
   command+=" && git clone --quiet git@github.com:yunpengn/Wholesale-MongoDB.git"
   command+=" && echo 'Will download input data ...'"
   command+=" && wget --quiet https://www.comp.nus.edu.sg/~cs4224/project-files.zip"
-  command+=" && unzip project-files.zip"
+  command+=" && unzip -q project-files.zip"
   command+=" && mkdir /temp/cs4224f/Wholesale-MongoDB/data/"
   command+=" && mv project-files/data-files/ /temp/cs4224f/Wholesale-MongoDB/data/"
   command+=" && mv project-files/xact-files/ /temp/cs4224f/Wholesale-MongoDB/data/"
