@@ -57,6 +57,7 @@ public class NewOrderTransaction extends BaseTransaction {
       MongoCollection<District> districtCollection = District.getCollection(db);
 
       District district = districtCollection.find(and(eq("D_W_ID", warehouseID), eq("D_ID", districtID))).first();
+      System.out.println(warehouseID + "   " + districtID);
       System.out.println(district);
   }
 }
