@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.*;
 
 /**
  * NewOrderTransaction is the transaction used to create a new order.
@@ -56,8 +56,8 @@ public class NewOrderTransaction extends BaseTransaction {
       MongoCollection<Customer> customerCollection = Customer.getCollection(db);
       MongoCollection<District> districtCollection = District.getCollection(db);
 
-      System.out.println("New order transaction...\n");
-      System.out.println(districtCollection.find(eq("W_ID", warehouseID)).first());
-
+      District district = districtCollection.find(and(eq("d_W_ID", warehouseID), eq("d_ID", districtID))).first();
+      System.out.println(warehouseID + "   " + districtID);
+      System.out.println(district);
   }
 }
