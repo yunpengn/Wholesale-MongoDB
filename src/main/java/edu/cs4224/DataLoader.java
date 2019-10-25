@@ -79,7 +79,8 @@ public class DataLoader {
         Customer.getCollection(db).createIndex(Indexes.descending("c_BALANCE"));
         // Customer.getCollection(db).createIndex(Indexes.ascending("c_W_ID", "c_D_ID", "c_ID"));
         // CustomerOrder.getCollection(db).createIndex(Indexes.ascending("o_W_ID", "o_D_ID", "o_ID"));
-        // CustomerOrder.getCollection(db).createIndex(Indexes.ascending("o_W_ID", "o_D_ID", "o_C_ID"));
+        CustomerOrder.getCollection(db).createIndex(Indexes.ascending("o_W_ID", "o_D_ID", "o_C_ID"));
+        CustomerOrder.getCollection(db).createIndex(Indexes.ascending("o_W_ID", "o_D_ID", "o_CARRIER_ID"));
         // Item.getCollection(db).createIndex(Indexes.ascending("i_ID"));
         // Stock.getCollection(db).createIndex(Indexes.ascending("s_W_ID", "s_I_ID"));
     }
