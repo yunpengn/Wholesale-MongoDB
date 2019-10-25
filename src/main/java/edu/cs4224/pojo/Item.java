@@ -20,6 +20,8 @@ public class Item {
     private String I_DATA;
     private HashSet<String> I_O_ID_LIST;
 
+    public Item() {}
+
     public Item(int i_ID, String i_NAME, double i_PRICE, int i_IM_ID, String i_DATA, HashSet<String> i_O_ID_LIST) {
         I_ID = i_ID;
         I_NAME = i_NAME;

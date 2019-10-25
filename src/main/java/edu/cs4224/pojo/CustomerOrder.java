@@ -28,6 +28,8 @@ public class CustomerOrder {
     @BsonProperty(useDiscriminator = true)
     private HashMap<String, OrderLineInfo> O_L_INFO;
 
+    public CustomerOrder() {}
+
     public CustomerOrder(int o_W_ID, int o_D_ID, int o_ID, int o_C_ID, Integer o_CARRIER_ID, int o_OL_CNT, int o_ALL_LOCAL, Date o_ENTRY_D, HashMap<String, OrderLineInfo> o_L_INFO) {
         O_W_ID = o_W_ID;
         O_D_ID = o_D_ID;

@@ -29,6 +29,8 @@ public class Stock {
     private String S_DIST_10;
     private String S_DATA;
 
+    public Stock() {}
+
     public Stock(int s_W_ID, int s_I_ID, int s_QUANTITY, double s_YTD, int s_ORDER_CNT, int s_REMOTE_CNT, String s_DIST_01, String s_DIST_02, String s_DIST_03, String s_DIST_04, String s_DIST_05, String s_DIST_06, String s_DIST_07, String s_DIST_08, String s_DIST_09, String s_DIST_10, String s_DATA) {
         S_W_ID = s_W_ID;
         S_I_ID = s_I_ID;

@@ -21,6 +21,8 @@ public class Warehouse {
     private double W_TAX;
     private double W_YTD;
 
+    public Warehouse() {}
+
     public Warehouse(int w_ID, String w_NAME, String w_STREET_1, String w_STREET_2, String w_CITY, String w_STATE, String w_ZIP, double w_TAX, double w_YTD) {
         W_ID = w_ID;
         W_NAME = w_NAME;

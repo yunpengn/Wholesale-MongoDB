@@ -24,6 +24,8 @@ public class District {
     private int D_NEXT_O_ID;
     private int D_NEXT_DELIVERY_O_ID;
 
+    public District() {}
+
     public District(int d_W_ID, int d_ID, String d_NAME, String d_STREET_1, String d_STREET_2, String d_CITY, String d_STATE, String d_ZIP, double d_TAX, double d_YTD, int d_NEXT_O_ID, int d_NEXT_DELIVERY_O_ID) {
         D_W_ID = d_W_ID;
         D_ID = d_ID;

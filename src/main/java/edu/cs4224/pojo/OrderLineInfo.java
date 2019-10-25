@@ -14,6 +14,8 @@ public class OrderLineInfo {
     private int OL_SUPPLY_W_ID;
     private int OL_QUANTITY;
 
+    public OrderLineInfo() {}
+
     public OrderLineInfo(int OL_I_ID, Date OL_DELIVERY_D, double OL_AMOUNT, int OL_SUPPLY_W_ID, int OL_QUANTITY) {
         this.OL_I_ID = OL_I_ID;
         this.OL_DELIVERY_D = OL_DELIVERY_D;

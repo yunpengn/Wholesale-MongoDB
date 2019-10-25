@@ -36,6 +36,8 @@ public class Customer {
     private int C_DELIVERY_CNT;
     private String C_DATA;
 
+    public Customer() {}
+
     public Customer(int c_W_ID, int c_D_ID, int c_ID, String c_FIRST, String c_MIDDLE, String c_LAST, String c_STREET_1, String c_STREET_2, String c_CITY, String c_STATE, String c_ZIP, String c_PHONE, Date c_SINCE, String c_CREDIT, double c_CREDIT_LIM, double c_DISCOUNT, double c_BALANCE, double c_YTD_PAYMENT, int c_PAYMENT_CNT, int c_DELIVERY_CNT, String c_DATA) {
         C_W_ID = c_W_ID;
         C_D_ID = c_D_ID;
