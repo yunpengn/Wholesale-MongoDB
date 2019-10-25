@@ -3,6 +3,7 @@ package edu.cs4224.transactions;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import edu.cs4224.Utils;
 import edu.cs4224.pojo.Customer;
 import edu.cs4224.pojo.CustomerOrder;
 import edu.cs4224.pojo.District;
@@ -11,8 +12,6 @@ import edu.cs4224.pojo.OrderLineInfo;
 import edu.cs4224.pojo.Stock;
 import edu.cs4224.pojo.Warehouse;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,8 +28,6 @@ public class NewOrderTransaction extends BaseTransaction {
   private final int warehouseID;
   private final int districtID;
   private final int numDataLines;
-  private static final Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
 
   public NewOrderTransaction(final MongoDatabase db, final String[] parameters) {
     super(db, parameters);
@@ -68,8 +65,6 @@ public class NewOrderTransaction extends BaseTransaction {
       MongoCollection<Warehouse> warehouseCollection = Warehouse.getCollection(db);
 
       District district = districtCollection.find(and(eq("d_W_ID", warehouseID), eq("d_ID", districtID))).first();
-      if (district == null) return;
-
       int isAllLocal = 1;
       for (int i = 0; i < supplierWareHouse.size(); i++) {
           if (supplierWareHouse.get(i) != warehouseID) isAllLocal = 0;
@@ -81,7 +76,8 @@ public class NewOrderTransaction extends BaseTransaction {
               set("d_NEXT_O_ID", next_o_id + 1));
 
       HashMap<String, OrderLineInfo> infos = new HashMap<>();
-      CustomerOrder order = new CustomerOrder(warehouseID, districtID, next_o_id, customerID, null, itemIds.size(), isAllLocal, new Date(), infos);
+      Date cur = new Date();
+      CustomerOrder order = new CustomerOrder(warehouseID, districtID, next_o_id, customerID, null, itemIds.size(), isAllLocal, cur, infos);
       List<Item> items = new ArrayList<>();
       List<Double> itemsAmount = new ArrayList<>();
       List<Integer> adjustedQuantities = new ArrayList<>();
@@ -121,10 +117,10 @@ public class NewOrderTransaction extends BaseTransaction {
       System.out.println(String.format("1. (W_ID: %d, D_ID: %d, C_ID, %d), C_LAST: %s, C_CREDIT: %s, C_DISCOUNT: %.4f",
               warehouseID, districtID, customerID, customer.getC_LAST(), customer.getC_CREDIT(), customer.getC_DISCOUNT()));
       System.out.println(String.format("2. W_TAX: %.4f, D_TAX: %.4f", warehouse.getW_TAX(), district.getD_TAX()));
-      System.out.println(String.format("3. O_ID: %d, O_ENTRY_D: %s", next_o_id, formatter.format(new Date())));
+      System.out.println(String.format("3. O_ID: %d, O_ENTRY_D: %s", next_o_id, Utils.formatter.format(cur)));
       System.out.println(String.format("4. NUM_ITEMS: %s, TOTAL_AMOUNT: %.2f", numDataLines, totalAmount));
       for (int i = 0; i < numDataLines; i++) {
-          System.out.println(String.format("\t ITEM_NUMBER: %s, I_NAME: %s, SUPPLIER_WAREHOUSE: %d, QUANTITY: %d, OL_AMOUNT: %.2f, S_QUANTITY: %f",
+          System.out.println(String.format("\t ITEM_NUMBER: %d, I_NAME: %s, SUPPLIER_WAREHOUSE: %d, QUANTITY: %d, OL_AMOUNT: %.2f, S_QUANTITY: %d",
                   itemIds.get(i), items.get(i).getI_NAME(), supplierWareHouse.get(i), quantity.get(i), itemsAmount.get(i), adjustedQuantities.get(i)));
       }
   }
