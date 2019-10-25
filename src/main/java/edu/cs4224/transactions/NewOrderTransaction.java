@@ -65,8 +65,6 @@ public class NewOrderTransaction extends BaseTransaction {
       MongoCollection<Warehouse> warehouseCollection = Warehouse.getCollection(db);
 
       District district = districtCollection.find(and(eq("d_W_ID", warehouseID), eq("d_ID", districtID))).first();
-      if (district == null) return;
-
       int isAllLocal = 1;
       for (int i = 0; i < supplierWareHouse.size(); i++) {
           if (supplierWareHouse.get(i) != warehouseID) isAllLocal = 0;
@@ -86,6 +84,7 @@ public class NewOrderTransaction extends BaseTransaction {
       double totalAmount = 0;
       for (int i = 0; i < itemIds.size(); i++) {
           Stock stock = stockCollection.find(and(eq("s_W_ID", supplierWareHouse.get(i)), eq("s_I_ID", itemIds.get(i)))).first();
+          System.out.println(supplierWareHouse.get(i) + "   " + itemIds.get(i));
           int curQuantity = stock.getS_QUANTITY();
           int adjustedQuantity = curQuantity - quantity.get(i);
           adjustedQuantities.add(adjustedQuantity);
