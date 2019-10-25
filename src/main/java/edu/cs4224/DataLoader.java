@@ -3,6 +3,7 @@ package edu.cs4224;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 
@@ -46,6 +47,7 @@ public class DataLoader {
 
     public void loadData() throws Exception {
         reset();
+        setIndexes();
 
         long startTime = System.nanoTime();
         // TODO set index before insert
@@ -69,6 +71,11 @@ public class DataLoader {
         CustomerOrder.getCollection(db).drop();
         Item.getCollection(db).drop();
         Stock.getCollection(db).drop();
+    }
+
+    private void setIndexes() {
+//        Warehouse.getCollection(db).createIndex(Indexes.ascending("w_ID"));
+//        District.getCollection(db).createIndex();
     }
 
     private void warehouse() throws Exception {

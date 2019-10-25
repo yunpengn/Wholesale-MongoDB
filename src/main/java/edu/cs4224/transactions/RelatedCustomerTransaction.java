@@ -55,7 +55,7 @@ public class RelatedCustomerTransaction extends BaseTransaction {
                     int orderID = Integer.parseInt(infos[2]);
                     String customerID = infos[3];
 
-                    String key = String.format("%s%s%s", warehoseID, districtID, orderID);
+                    String key = String.format("%d%d%d", warehoseID, districtID, orderID);
 
                     if (warehoseID == C_W_ID)
                         continue;
