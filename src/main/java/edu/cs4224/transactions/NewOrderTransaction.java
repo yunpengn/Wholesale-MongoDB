@@ -15,6 +15,7 @@ import edu.cs4224.pojo.Warehouse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.*;
@@ -100,6 +101,12 @@ public class NewOrderTransaction extends BaseTransaction {
           );
 
           Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
+          HashSet<String> curSet = curItem.getI_O_ID_LIST();
+          curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
+          itemCollection.updateOne(
+                  eq("_id", curItem.getId()),
+                  set("i_O_ID_LIST",  curSet)
+          );
           items.add(curItem);
           double itemAmount = quantity.get(i) * curItem.getI_PRICE();
           itemsAmount.add(itemAmount);
