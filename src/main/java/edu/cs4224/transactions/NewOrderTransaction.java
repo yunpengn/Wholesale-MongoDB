@@ -3,12 +3,14 @@ package edu.cs4224.transactions;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import edu.cs4224.pojo.Customer;
-import org.bson.Document;
+import edu.cs4224.pojo.District;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mongodb.client.model.Filters.gte;
 
 /**
  * NewOrderTransaction is the transaction used to create a new order.
@@ -50,6 +52,11 @@ public class NewOrderTransaction extends BaseTransaction {
   }
 
   private void createNewOrder(List<Integer> itemIds, List<Integer> supplierWareHouse, List<Integer> quantity) {
-      MongoCollection<Customer> collection = Customer.getCollection(db);
+      MongoCollection<Customer> customerCollection = Customer.getCollection(db);
+      MongoCollection<District> districtCollection = District.getCollection(db);
+
+      System.out.println("New order transaction...\n");
+      System.out.println(districtCollection.find(gte("stars", 2)).first());
+
   }
 }

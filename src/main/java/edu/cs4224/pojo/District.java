@@ -18,10 +18,10 @@ public class District {
     private String D_ZIP;
     private double D_TAX;
     private double D_YTD;
-    private double D_NEXT_O_ID;
+    private int D_NEXT_O_ID;
     private int D_NEXT_DELIVERY_O_ID;
 
-    public District(int d_W_ID, int d_ID, String d_NAME, String d_STREET_1, String d_STREET_2, String d_CITY, String d_STATE, String d_ZIP, double d_TAX, double d_YTD, double d_NEXT_O_ID, int d_NEXT_DELIVERY_O_ID) {
+    public District(int d_W_ID, int d_ID, String d_NAME, String d_STREET_1, String d_STREET_2, String d_CITY, String d_STATE, String d_ZIP, double d_TAX, double d_YTD, int d_NEXT_O_ID, int d_NEXT_DELIVERY_O_ID) {
         D_W_ID = d_W_ID;
         D_ID = d_ID;
         D_NAME = d_NAME;
@@ -52,7 +52,7 @@ public class District {
                 (data[7]),
                 Double.parseDouble(data[8]),
                 Double.parseDouble(data[9]),
-                Double.parseDouble(data[10]),
+                Integer.parseInt(data[10]),
                 Integer.parseInt(data[11])
         );
     }
@@ -141,7 +141,7 @@ public class District {
         return D_NEXT_O_ID;
     }
 
-    public void setD_NEXT_O_ID(double d_NEXT_O_ID) {
+    public void setD_NEXT_O_ID(int d_NEXT_O_ID) {
         D_NEXT_O_ID = d_NEXT_O_ID;
     }
 
