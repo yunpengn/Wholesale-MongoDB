@@ -6,9 +6,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 public class DeliveryTransaction extends BaseTransaction {
-
   private static final int NUM_DISTRICTS = 10;
-  private static final Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
   private final int warehouseID;
   private final int carrierID;
