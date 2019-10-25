@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 
 /**
@@ -56,7 +57,7 @@ public class NewOrderTransaction extends BaseTransaction {
       MongoCollection<District> districtCollection = District.getCollection(db);
 
       System.out.println("New order transaction...\n");
-      System.out.println(districtCollection.find(gte("stars", 2)).first());
+      System.out.println(districtCollection.find(eq("W_ID", warehouseID)).first());
 
   }
 }
