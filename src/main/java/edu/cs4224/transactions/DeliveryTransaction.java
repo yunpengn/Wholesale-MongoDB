@@ -38,8 +38,9 @@ public class DeliveryTransaction extends BaseTransaction {
       if (currentDistrict == null) {
         throw new RuntimeException(String.format("Unable to find district with warehouseID=%d districtID=%d", warehouseID, i));
       }
-
       int orderID = currentDistrict.getD_NEXT_DELIVERY_O_ID();
+      System.out.printf("The oldest yet to delivery order in warehouseID=%d districtID=%d is orderID=%d.\n", warehouseID, i, orderID);
+      
       CustomerOrder yetDeliverOrder = order.find(Filters.and(
           Filters.eq("o_W_ID", warehouseID),
           Filters.eq("o_D_ID", i),
