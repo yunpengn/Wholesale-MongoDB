@@ -74,14 +74,14 @@ public class DataLoader {
     }
 
     private void setIndexes() {
+        Warehouse.getCollection(db).createIndex(Indexes.ascending("w_ID"));
         District.getCollection(db).createIndex(Indexes.ascending("d_W_ID", "d_ID"));
-        Stock.getCollection(db).createIndex(Indexes.ascending("s_W_ID", "s_I_ID"));
         Customer.getCollection(db).createIndex(Indexes.descending("c_BALANCE"));
         Customer.getCollection(db).createIndex(Indexes.ascending("c_W_ID", "c_D_ID", "c_ID"));
         CustomerOrder.getCollection(db).createIndex(Indexes.ascending("o_W_ID", "o_D_ID", "o_ID"));
         CustomerOrder.getCollection(db).createIndex(Indexes.ascending("o_W_ID", "o_D_ID", "o_C_ID"));
         Item.getCollection(db).createIndex(Indexes.ascending("i_ID"));
-        Warehouse.getCollection(db).createIndex(Indexes.ascending("w_ID"));
+        Stock.getCollection(db).createIndex(Indexes.ascending("s_W_ID", "s_I_ID"));
     }
 
     private void warehouse() throws Exception {

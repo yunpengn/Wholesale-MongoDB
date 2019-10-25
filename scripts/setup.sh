@@ -30,12 +30,11 @@ setup_mongo() {
   command+=" && rm -rf mongodb-linux-x86_64-rhel70-4.2.0/"
   command+=" && rm -rf Wholesale-MongoDB/"
 
-  # Download mongo package and clone the repository.
+  # Download mongo package.
   command+=" && echo 'Will download MongoDB and clone from GitHub ...'"
   command+=" && wget --quiet https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-4.2.0.tgz"
   command+=" && tar -zxf mongodb-linux-x86_64-rhel70-4.2.0.tgz"
   command+=" && rm mongodb-linux-x86_64-rhel70-4.2.0.tgz"
-  command+=" && git clone --quiet git@github.com:yunpengn/Wholesale-MongoDB.git"
 
   # Create folders to store data and log.
   command+=" && echo 'Will create folders ...'"
@@ -47,6 +46,16 @@ setup_mongo() {
   command+=" && mkdir /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/data/s4/"
   command+=" && mkdir /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/data/s5/"
   command+=" && mkdir /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/log/"
+
+  # Clones the repository and input data.
+  command+=" && git clone --quiet git@github.com:yunpengn/Wholesale-MongoDB.git"
+  command+=" && wget --quiet https://www.comp.nus.edu.sg/~cs4224/project-files.zip"
+  command+=" && unzip project-files.zip"
+  command+=" && mkdir /temp/cs4224f/Wholesale-MongoDB/data/"
+  command+=" && mv project-files/data-files/ /temp/cs4224f/Wholesale-MongoDB/data/"
+  command+=" && mv project-files/xact-files/ /temp/cs4224f/Wholesale-MongoDB/data/"
+  command+=" && rm project-files.zip"
+  command+=" && rm -rf project-files/"
 
   # Executes the command.
   execute_command_on_all "$command"
