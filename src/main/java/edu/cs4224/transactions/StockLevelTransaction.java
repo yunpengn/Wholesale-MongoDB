@@ -1,15 +1,19 @@
 package edu.cs4224.transactions;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+
+import edu.cs4224.pojo.CustomerOrder;
+import edu.cs4224.pojo.District;
+import edu.cs4224.pojo.OrderLineInfo;
+import edu.cs4224.pojo.Stock;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class StockLevelTransaction extends BaseTransaction {
-  private static final String GET_DISTRICT
-      = "SELECT d_next_o_id FROM district_w WHERE d_w_id = %d AND d_id = %d";
-  private static final String LAST_L_ORDERS
-      = "SELECT o_l_info FROM customer_order WHERE o_w_id = %d AND o_d_id = %d AND o_id >= %d AND o_id < %d";
-  private static final String STOCK_BELOW_THRESHOLD
-      = "SELECT s_quantity FROM stock_w WHERE s_w_id = %d AND s_i_id IN (%s)";
-
   private final int warehouseID;
   private final int districtID;
   private final int threshold;
@@ -25,6 +29,38 @@ public class StockLevelTransaction extends BaseTransaction {
   }
 
   @Override public void execute(final String[] dataLines) {
+    MongoCollection<District> district = District.getCollection(db);
+    MongoCollection<CustomerOrder> order = CustomerOrder.getCollection(db);
+    MongoCollection<Stock> stock = Stock.getCollection(db);
 
+    District currentDistrict = district.find(Filters.and(
+        Filters.eq("d_W_ID", warehouseID),
+        Filters.eq("d_ID", districtID)
+    )).first();
+    if (currentDistrict == null) {
+      throw new RuntimeException(String.format("Unable to find district with warehouseID=%d districtID=%d", warehouseID, districtID));
+    }
+    int nextOrderID = currentDistrict.getD_NEXT_O_ID();
+    System.out.printf("The next available order number in warehouseID=%d districtID=%d is %d.\n", warehouseID, districtID, nextOrderID);
+
+    Set<Integer> itemIDs = new HashSet<>();
+    order.find(Filters.and(
+        Filters.eq("o_W_ID", warehouseID),
+        Filters.eq("o_D_ID", districtID),
+        Filters.gte("o_ID", nextOrderID - numOrders),
+        Filters.lt("o_ID", nextOrderID)
+    )).forEach((Consumer<? super CustomerOrder>) customerOrder -> {
+      for (OrderLineInfo orderLine: customerOrder.getO_L_INFO().values()) {
+        itemIDs.add(orderLine.getOL_I_ID());
+      }
+    });
+    System.out.printf("The list of itemIDs is %s.\n", itemIDs);
+
+    long count = stock.countDocuments(Filters.and(
+        Filters.eq("s_W_ID", warehouseID),
+        Filters.in("s_I_ID", itemIDs),
+        Filters.lt("s_QUANTITY", threshold)
+    ));
+    System.out.printf("Number of items below threshold: %d\n", count);
   }
 }
