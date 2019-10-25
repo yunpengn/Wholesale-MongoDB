@@ -184,6 +184,7 @@ public class DataLoader {
     }
 
     private void appendNextDeliveryID() {
+        System.out.println("append next delivery order ID");
         MongoCollection<CustomerOrder> customerOrder = CustomerOrder.getCollection(db);
         MongoCollection<District> district = District.getCollection(db);
 
