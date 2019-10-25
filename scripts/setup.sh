@@ -31,7 +31,7 @@ setup_mongo() {
   command+=" && rm -rf Wholesale-MongoDB/"
 
   # Download mongo package.
-  command+=" && echo 'Will download MongoDB and clone from GitHub ...'"
+  command+=" && echo 'Will download MongoDB ...'"
   command+=" && wget --quiet https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-4.2.0.tgz"
   command+=" && tar -zxf mongodb-linux-x86_64-rhel70-4.2.0.tgz"
   command+=" && rm mongodb-linux-x86_64-rhel70-4.2.0.tgz"
@@ -48,7 +48,9 @@ setup_mongo() {
   command+=" && mkdir /temp/cs4224f/mongodb-linux-x86_64-rhel70-4.2.0/log/"
 
   # Clones the repository and input data.
+  command+=" && echo 'Will clone repository from GitHub ...'"
   command+=" && git clone --quiet git@github.com:yunpengn/Wholesale-MongoDB.git"
+  command+=" && echo 'Will download input data ...'"
   command+=" && wget --quiet https://www.comp.nus.edu.sg/~cs4224/project-files.zip"
   command+=" && unzip project-files.zip"
   command+=" && mkdir /temp/cs4224f/Wholesale-MongoDB/data/"
