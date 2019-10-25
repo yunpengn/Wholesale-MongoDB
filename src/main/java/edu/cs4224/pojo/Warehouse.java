@@ -33,6 +33,19 @@ public class Warehouse {
         W_YTD = w_YTD;
     }
 
+    public Warehouse(ObjectId id, int w_ID, String w_NAME, String w_STREET_1, String w_STREET_2, String w_CITY, String w_STATE, String w_ZIP, double w_TAX, double w_YTD) {
+        this.id = id;
+        W_ID = w_ID;
+        W_NAME = w_NAME;
+        W_STREET_1 = w_STREET_1;
+        W_STREET_2 = w_STREET_2;
+        W_CITY = w_CITY;
+        W_STATE = w_STATE;
+        W_ZIP = w_ZIP;
+        W_TAX = w_TAX;
+        W_YTD = w_YTD;
+    }
+
     public static MongoCollection<Warehouse> getCollection(MongoDatabase db) {
         return db.getCollection("warehouse", Warehouse.class)
             .withReadConcern(Main.DEFAULT_READ_CONCERN)

@@ -60,6 +60,31 @@ public class Customer {
         C_DATA = c_DATA;
     }
 
+    public Customer(ObjectId id, int c_W_ID, int c_D_ID, int c_ID, String c_FIRST, String c_MIDDLE, String c_LAST, String c_STREET_1, String c_STREET_2, String c_CITY, String c_STATE, String c_ZIP, String c_PHONE, Date c_SINCE, String c_CREDIT, double c_CREDIT_LIM, double c_DISCOUNT, double c_BALANCE, double c_YTD_PAYMENT, int c_PAYMENT_CNT, int c_DELIVERY_CNT, String c_DATA) {
+        this.id = id;
+        C_W_ID = c_W_ID;
+        C_D_ID = c_D_ID;
+        C_ID = c_ID;
+        C_FIRST = c_FIRST;
+        C_MIDDLE = c_MIDDLE;
+        C_LAST = c_LAST;
+        C_STREET_1 = c_STREET_1;
+        C_STREET_2 = c_STREET_2;
+        C_CITY = c_CITY;
+        C_STATE = c_STATE;
+        C_ZIP = c_ZIP;
+        C_PHONE = c_PHONE;
+        C_SINCE = c_SINCE;
+        C_CREDIT = c_CREDIT;
+        C_CREDIT_LIM = c_CREDIT_LIM;
+        C_DISCOUNT = c_DISCOUNT;
+        C_BALANCE = c_BALANCE;
+        C_YTD_PAYMENT = c_YTD_PAYMENT;
+        C_PAYMENT_CNT = c_PAYMENT_CNT;
+        C_DELIVERY_CNT = c_DELIVERY_CNT;
+        C_DATA = c_DATA;
+    }
+
     public static MongoCollection<Customer> getCollection(MongoDatabase db) {
         return db.getCollection("customer", Customer.class)
             .withReadConcern(Main.DEFAULT_READ_CONCERN)

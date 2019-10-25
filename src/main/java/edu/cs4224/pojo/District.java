@@ -39,6 +39,22 @@ public class District {
         D_NEXT_DELIVERY_O_ID = d_NEXT_DELIVERY_O_ID;
     }
 
+    public District(ObjectId id, int d_W_ID, int d_ID, String d_NAME, String d_STREET_1, String d_STREET_2, String d_CITY, String d_STATE, String d_ZIP, double d_TAX, double d_YTD, int d_NEXT_O_ID, int d_NEXT_DELIVERY_O_ID) {
+        this.id = id;
+        D_W_ID = d_W_ID;
+        D_ID = d_ID;
+        D_NAME = d_NAME;
+        D_STREET_1 = d_STREET_1;
+        D_STREET_2 = d_STREET_2;
+        D_CITY = d_CITY;
+        D_STATE = d_STATE;
+        D_ZIP = d_ZIP;
+        D_TAX = d_TAX;
+        D_YTD = d_YTD;
+        D_NEXT_O_ID = d_NEXT_O_ID;
+        D_NEXT_DELIVERY_O_ID = d_NEXT_DELIVERY_O_ID;
+    }
+
     public static MongoCollection<District> getCollection(MongoDatabase db) {
         return db.getCollection("district", District.class)
             .withReadConcern(Main.DEFAULT_READ_CONCERN)

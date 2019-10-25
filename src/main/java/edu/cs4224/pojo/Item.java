@@ -29,6 +29,16 @@ public class Item {
         I_O_ID_LIST = i_O_ID_LIST;
     }
 
+    public Item(ObjectId id, int i_ID, String i_NAME, double i_PRICE, int i_IM_ID, String i_DATA, HashSet<String> i_O_ID_LIST) {
+        this.id = id;
+        I_ID = i_ID;
+        I_NAME = i_NAME;
+        I_PRICE = i_PRICE;
+        I_IM_ID = i_IM_ID;
+        I_DATA = i_DATA;
+        I_O_ID_LIST = i_O_ID_LIST;
+    }
+
     public static MongoCollection<Item> getCollection(MongoDatabase db) {
         return db.getCollection("item", Item.class)
             .withReadConcern(Main.DEFAULT_READ_CONCERN)

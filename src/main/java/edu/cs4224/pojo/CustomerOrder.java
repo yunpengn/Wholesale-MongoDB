@@ -40,6 +40,19 @@ public class CustomerOrder {
         O_L_INFO = o_L_INFO;
     }
 
+    public CustomerOrder(ObjectId id, int o_W_ID, int o_D_ID, int o_ID, int o_C_ID, Integer o_CARRIER_ID, int o_OL_CNT, int o_ALL_LOCAL, Date o_ENTRY_D, HashMap<String, OrderLineInfo> o_L_INFO) {
+        this.id = id;
+        O_W_ID = o_W_ID;
+        O_D_ID = o_D_ID;
+        O_ID = o_ID;
+        O_C_ID = o_C_ID;
+        O_CARRIER_ID = o_CARRIER_ID;
+        O_OL_CNT = o_OL_CNT;
+        O_ALL_LOCAL = o_ALL_LOCAL;
+        O_ENTRY_D = o_ENTRY_D;
+        O_L_INFO = o_L_INFO;
+    }
+
     public static MongoCollection<CustomerOrder> getCollection(MongoDatabase db) {
         return db.getCollection("order", CustomerOrder.class)
             .withReadConcern(Main.DEFAULT_READ_CONCERN)
