@@ -2,6 +2,8 @@ package edu.cs4224.pojo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
+import edu.cs4224.Main;
 import edu.cs4224.Utils;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
@@ -37,7 +39,9 @@ public class CustomerOrder {
     }
 
     public static MongoCollection<CustomerOrder> getCollection(MongoDatabase db) {
-        return db.getCollection("order", CustomerOrder.class);
+        return db.getCollection("order", CustomerOrder.class)
+            .withReadConcern(Main.DEFAULT_READ_CONCERN)
+            .withWriteConcern(Main.DEFAULT_WRITE_CONCERN);
     }
 
     public static CustomerOrder fromCSV(String[] data, HashMap<String, OrderLineInfo> o_L_INFO) {

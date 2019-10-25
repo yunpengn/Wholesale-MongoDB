@@ -1,7 +1,9 @@
 package edu.cs4224;
 
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ReadConcern;
 import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -19,6 +21,7 @@ import edu.cs4224.transactions.TopBalanceTransaction;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +33,10 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class Main {
+    // The default read concern level.
+    public static ReadConcern DEFAULT_READ_CONCERN = ReadConcern.DEFAULT;
+    // The default write concern level.
+    public static WriteConcern DEFAULT_WRITE_CONCERN = WriteConcern.ACKNOWLEDGED;
 
     public static void main(String[] args) throws Exception {
         new Main().init(args);
@@ -55,16 +62,28 @@ public class Main {
     }
 
     private void runTransactions(MongoDatabase db, String[] args) throws Exception {
+        // Updates the concern level setting.
         String consistencyLevel = args[1];
-
-        Scanner scanner = new Scanner(System.in);
         System.out.println("The system has been started with consistency level " + consistencyLevel);
+        switch (consistencyLevel) {
+        case "MAJORITY":
+            DEFAULT_READ_CONCERN = ReadConcern.MAJORITY;
+            DEFAULT_WRITE_CONCERN = WriteConcern.MAJORITY;
+            break;
+        case "ONE_FIVE":
+            DEFAULT_READ_CONCERN = ReadConcern.LOCAL;
+            DEFAULT_WRITE_CONCERN = new WriteConcern(5);
+            break;
+        default:
+            throw new InvalidParameterException("Invalid consistency level given.");
+        }
 
         // Some variables for statistics.
         List<Long> latency = new ArrayList<>();
         long start, end, txStart, txEnd, elapsedTime;
 
         // Reads the input line-by-line.
+        Scanner scanner = new Scanner(System.in);
         start = System.nanoTime();
         while (scanner.hasNext()) {
             String line = scanner.nextLine();

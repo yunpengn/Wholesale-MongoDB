@@ -2,14 +2,6 @@ package edu.cs4224.transactions;
 
 import com.mongodb.client.MongoDatabase;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
-
 
 public class PopularItemTransaction extends BaseTransaction {
 

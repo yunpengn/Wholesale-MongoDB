@@ -2,6 +2,7 @@ package edu.cs4224.transactions;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import edu.cs4224.pojo.Customer;
 import edu.cs4224.pojo.District;
 
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gte;
 
 /**
  * NewOrderTransaction is the transaction used to create a new order.

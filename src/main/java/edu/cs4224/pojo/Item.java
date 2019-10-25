@@ -2,6 +2,8 @@ package edu.cs4224.pojo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
+import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import java.util.HashSet;
@@ -26,7 +28,9 @@ public class Item {
     }
 
     public static MongoCollection<Item> getCollection(MongoDatabase db) {
-        return db.getCollection("item", Item.class);
+        return db.getCollection("item", Item.class)
+            .withReadConcern(Main.DEFAULT_READ_CONCERN)
+            .withWriteConcern(Main.DEFAULT_WRITE_CONCERN);
     }
 
     public static Item fromCSV(String[] data, HashSet<String> i_O_ID_LIST) {

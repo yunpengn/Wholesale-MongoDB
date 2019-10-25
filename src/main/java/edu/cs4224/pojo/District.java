@@ -3,6 +3,7 @@ package edu.cs4224.pojo;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @BsonDiscriminator
@@ -37,7 +38,9 @@ public class District {
     }
 
     public static MongoCollection<District> getCollection(MongoDatabase db) {
-        return db.getCollection("district", District.class);
+        return db.getCollection("district", District.class)
+            .withReadConcern(Main.DEFAULT_READ_CONCERN)
+            .withWriteConcern(Main.DEFAULT_WRITE_CONCERN);
     }
 
     public static District fromCSV(String[] data) {

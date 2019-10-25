@@ -3,6 +3,7 @@ package edu.cs4224.pojo;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 @BsonDiscriminator
@@ -31,7 +32,9 @@ public class Warehouse {
     }
 
     public static MongoCollection<Warehouse> getCollection(MongoDatabase db) {
-        return db.getCollection("warehouse", Warehouse.class);
+        return db.getCollection("warehouse", Warehouse.class)
+            .withReadConcern(Main.DEFAULT_READ_CONCERN)
+            .withWriteConcern(Main.DEFAULT_WRITE_CONCERN);
     }
 
     public static Warehouse fromCSV(String[] data) {
