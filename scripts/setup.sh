@@ -29,8 +29,6 @@ setup_mongo() {
   command+=" && rm -f mongodb-linux-x86_64-rhel70-4.2.0.tgz*"
   command+=" && rm -rf mongodb-linux-x86_64-rhel70-4.2.0/"
   command+=" && rm -rf Wholesale-MongoDB/"
-  command+=" && rm project-files.zip"
-  command+=" && rm -rf project-files/"
 
   # Download mongo package.
   command+=" && echo 'Will download MongoDB ...'"
