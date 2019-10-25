@@ -6,12 +6,14 @@ import com.mongodb.client.MongoDatabase;
 import edu.cs4224.Main;
 import edu.cs4224.Utils;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.types.ObjectId;
 
 import java.util.Date;
 
 @BsonDiscriminator
 public class Customer {
 
+    private ObjectId id;
     private int C_W_ID;
     private int C_D_ID;
     private int C_ID;
@@ -88,6 +90,14 @@ public class Customer {
                 Integer.parseInt(data[19]),
                 (data[20])
         );
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public int getC_W_ID() {

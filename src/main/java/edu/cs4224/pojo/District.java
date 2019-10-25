@@ -5,10 +5,12 @@ import com.mongodb.client.MongoDatabase;
 
 import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.types.ObjectId;
 
 @BsonDiscriminator
 public class District {
 
+    private ObjectId id;
     private int D_W_ID;
     private int D_ID;
     private String D_NAME;
@@ -58,6 +60,14 @@ public class District {
                 Integer.parseInt(data[10]),
                 Integer.parseInt(data[11])
         );
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public int getD_W_ID() {

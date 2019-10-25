@@ -5,10 +5,12 @@ import com.mongodb.client.MongoDatabase;
 
 import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.types.ObjectId;
 
 @BsonDiscriminator
 public class Stock {
 
+    private ObjectId id;
     private int S_W_ID;
     private int S_I_ID;
     private int S_QUANTITY;
@@ -73,6 +75,14 @@ public class Stock {
                 (data[15]),
                 (data[16])
         );
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public int getS_W_ID() {

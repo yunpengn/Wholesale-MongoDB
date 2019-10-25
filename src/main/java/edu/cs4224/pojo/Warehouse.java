@@ -5,10 +5,12 @@ import com.mongodb.client.MongoDatabase;
 
 import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.types.ObjectId;
 
 @BsonDiscriminator
 public class Warehouse {
 
+    private ObjectId id;
     private int W_ID;
     private String W_NAME;
     private String W_STREET_1;
@@ -49,6 +51,14 @@ public class Warehouse {
                 Double.parseDouble(data[7]),
                 Double.parseDouble(data[8])
         );
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public int getW_ID() {

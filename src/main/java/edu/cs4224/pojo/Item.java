@@ -5,12 +5,14 @@ import com.mongodb.client.MongoDatabase;
 
 import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.types.ObjectId;
 
 import java.util.HashSet;
 
 @BsonDiscriminator
 public class Item {
 
+    private ObjectId id;
     private int I_ID;
     private String I_NAME;
     private double I_PRICE;
@@ -42,6 +44,14 @@ public class Item {
                 (data[4]),
                 i_O_ID_LIST
         );
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public int getI_ID() {
