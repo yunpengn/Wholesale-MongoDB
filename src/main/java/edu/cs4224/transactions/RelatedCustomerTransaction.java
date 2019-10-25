@@ -48,10 +48,8 @@ public class RelatedCustomerTransaction extends BaseTransaction {
                 if (ordersSet == null)
                     continue;
 
-                for (String orderInfo: ordersSet) {
-                    System.out.println(orderInfo);
-
-                    String[] infos = orderInfo.split("-");
+                for (String orderInfo : ordersSet) {
+                    String[] infos = orderInfo.replaceAll("'", "").split("-");
                     int warehoseID = Integer.parseInt(infos[0]);
                     int districtID = Integer.parseInt(infos[1]);
                     int orderID = Integer.parseInt(infos[2]);
