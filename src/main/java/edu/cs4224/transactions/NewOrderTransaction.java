@@ -81,7 +81,8 @@ public class NewOrderTransaction extends BaseTransaction {
               set("d_NEXT_O_ID", next_o_id + 1));
 
       HashMap<String, OrderLineInfo> infos = new HashMap<>();
-      CustomerOrder order = new CustomerOrder(warehouseID, districtID, next_o_id, customerID, null, itemIds.size(), isAllLocal, new Date(), infos);
+      Date cur = new Date();
+      CustomerOrder order = new CustomerOrder(warehouseID, districtID, next_o_id, customerID, null, itemIds.size(), isAllLocal, cur, infos);
       List<Item> items = new ArrayList<>();
       List<Double> itemsAmount = new ArrayList<>();
       List<Integer> adjustedQuantities = new ArrayList<>();
@@ -121,7 +122,7 @@ public class NewOrderTransaction extends BaseTransaction {
       System.out.println(String.format("1. (W_ID: %d, D_ID: %d, C_ID, %d), C_LAST: %s, C_CREDIT: %s, C_DISCOUNT: %.4f",
               warehouseID, districtID, customerID, customer.getC_LAST(), customer.getC_CREDIT(), customer.getC_DISCOUNT()));
       System.out.println(String.format("2. W_TAX: %.4f, D_TAX: %.4f", warehouse.getW_TAX(), district.getD_TAX()));
-      System.out.println(String.format("3. O_ID: %d, O_ENTRY_D: %s", next_o_id, formatter.format(new Date())));
+      System.out.println(String.format("3. O_ID: %d, O_ENTRY_D: %s", next_o_id, formatter.format(cur)));
       System.out.println(String.format("4. NUM_ITEMS: %s, TOTAL_AMOUNT: %.2f", numDataLines, totalAmount));
       for (int i = 0; i < numDataLines; i++) {
           System.out.println(String.format("\t ITEM_NUMBER: %s, I_NAME: %s, SUPPLIER_WAREHOUSE: %d, QUANTITY: %d, OL_AMOUNT: %.2f, S_QUANTITY: %f",
