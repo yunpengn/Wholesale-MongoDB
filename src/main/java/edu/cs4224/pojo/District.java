@@ -137,7 +137,7 @@ public class District {
         D_YTD = d_YTD;
     }
 
-    public double getD_NEXT_O_ID() {
+    public int getD_NEXT_O_ID() {
         return D_NEXT_O_ID;
     }
 
