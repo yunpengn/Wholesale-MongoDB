@@ -72,7 +72,7 @@ public class Main {
             break;
         case "ONE_FIVE":
             DEFAULT_READ_CONCERN = ReadConcern.LOCAL;
-            DEFAULT_WRITE_CONCERN = new WriteConcern(5);
+            DEFAULT_WRITE_CONCERN = new WriteConcern(3);
             break;
         default:
             throw new InvalidParameterException("Invalid consistency level given.");
