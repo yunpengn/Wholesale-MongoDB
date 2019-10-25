@@ -8,7 +8,7 @@ project_path=$(dirname $(dirname $(realpath $0)))
 run() {
     cd $project_path
     ./gradlew shadowJar
-    java -jar build/libs/Wholesale-MongoDB-1.0-SNAPSHOT-all.jar run
+    java -jar build/libs/Wholesale-MongoDB-1.0-SNAPSHOT-all.jar run $1
 }
 
 load_data() {
@@ -19,7 +19,7 @@ load_data() {
 
 
 if [[ "$1" == "run" ]]; then
-    run
+    run $2
 elif [[ "$1" == "loaddata" ]]; then
     load_data
 else
