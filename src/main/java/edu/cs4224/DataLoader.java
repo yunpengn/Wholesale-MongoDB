@@ -2,6 +2,9 @@ package edu.cs4224;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Updates;
 
 import edu.cs4224.pojo.Customer;
 import edu.cs4224.pojo.CustomerOrder;
@@ -53,7 +56,7 @@ public class DataLoader {
         customer_order();
         item();
         stock();
-//        appendNextDeliveryID();
+        appendNextDeliveryID();
 
         System.out.printf("finish loading in %ds\n",
                 TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS));
@@ -181,24 +184,31 @@ public class DataLoader {
     }
 
     private void appendNextDeliveryID() {
-        // TODO
-//        for (Map.Entry<Integer, Set<Integer>> entry : districtIDs.entrySet()) {
-//            int C_W_ID = entry.getKey();
-//            for (int C_D_ID : entry.getValue()) {
-//                String query = "SELECT * FROM customer_order WHERE o_w_id = %d AND o_d_id = %d ORDER BY o_id";
-//                List<Row> orders = session.execute(String.format(query, C_W_ID, C_D_ID)).all();
-//
-//                int min = Integer.MAX_VALUE;
-//                for (Row order : orders) {
-//                    if (order.isNull("o_carrier_id")) {
-//                        min = Math.min(min, order.getInt("O_ID"));
-//                    }
-//                }
-//
-//                query = "UPDATE district_w SET D_NEXT_DELIVERY_O_ID = D_NEXT_DELIVERY_O_ID + %d WHERE D_W_ID = %d AND D_ID = %d";
-//                session.execute(String.format(query, min, C_W_ID, C_D_ID));
-//            }
-//        }
+        MongoCollection<CustomerOrder> customerOrder = CustomerOrder.getCollection(db);
+        MongoCollection<District> district = District.getCollection(db);
+
+        for (Map.Entry<Integer, Set<Integer>> entry : districtIDs.entrySet()) {
+            int warehouseID = entry.getKey();
+            for (int districtID: entry.getValue()) {
+                // Finds the oldest yet-to-delivery order.
+                CustomerOrder yetToDeliver = customerOrder.find(Filters.and(
+                    Filters.eq("o_W_ID", warehouseID),
+                    Filters.eq("o_D_ID", districtID),
+                    Filters.eq("o_CARRIER_ID", null)
+                )).sort(Sorts.ascending("o_id")).first();
+
+                // Cannot find any not delivered order.
+                if (yetToDeliver == null) {
+                    throw new RuntimeException(String.format("Cannot find yet-to-deliver order in warehouseID=%d districtID=%d", warehouseID, districtID));
+                }
+
+                // Updates the current district.
+                district.updateOne(Filters.and(
+                    Filters.eq("d_W_ID", warehouseID),
+                    Filters.eq("d_ID", districtID)
+                ), Updates.set("d_NEXT_DELIVERY_O_ID", yetToDeliver.getO_ID()));
+            }
+        }
     }
 
     private void readAndExecute(String fileName, Consumer<String> consumer) throws Exception {
