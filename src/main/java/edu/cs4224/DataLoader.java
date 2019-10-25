@@ -76,6 +76,7 @@ public class DataLoader {
     private void setIndexes() {
 //        Warehouse.getCollection(db).createIndex(Indexes.ascending("w_ID"));
 //        District.getCollection(db).createIndex();
+        Customer.getCollection(db).createIndex(Indexes.descending("c_BALANCE"));
     }
 
     private void warehouse() throws Exception {

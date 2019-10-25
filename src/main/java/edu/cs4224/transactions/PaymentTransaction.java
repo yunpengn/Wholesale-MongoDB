@@ -31,8 +31,6 @@ public class PaymentTransaction extends BaseTransaction {
   @Override public void execute(final String[] dataLines) {
       MongoCollection<Customer> customerCollection = Customer.getCollection(db);
       MongoCollection<District> districtCollection = District.getCollection(db);
-      MongoCollection<Stock> stockCollection = Stock.getCollection(db);
-      MongoCollection<Item> itemCollection = Item.getCollection(db);
       MongoCollection<Warehouse> warehouseCollection = Warehouse.getCollection(db);
 
       Warehouse warehouse = warehouseCollection.find(eq("w_ID", customer_warehouse_id)).first();
