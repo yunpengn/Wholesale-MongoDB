@@ -2,9 +2,6 @@ package edu.cs4224.transactions;
 
 import com.mongodb.client.MongoDatabase;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class StockLevelTransaction extends BaseTransaction {
   private static final String GET_DISTRICT
       = "SELECT d_next_o_id FROM district_w WHERE d_w_id = %d AND d_id = %d";

@@ -2,13 +2,17 @@ package edu.cs4224.pojo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
+import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.types.ObjectId;
 
 import java.util.HashSet;
 
 @BsonDiscriminator
 public class Item {
 
+    private ObjectId id;
     private int I_ID;
     private String I_NAME;
     private double I_PRICE;
@@ -26,7 +30,9 @@ public class Item {
     }
 
     public static MongoCollection<Item> getCollection(MongoDatabase db) {
-        return db.getCollection("item", Item.class);
+        return db.getCollection("item", Item.class)
+            .withReadConcern(Main.DEFAULT_READ_CONCERN)
+            .withWriteConcern(Main.DEFAULT_WRITE_CONCERN);
     }
 
     public static Item fromCSV(String[] data, HashSet<String> i_O_ID_LIST) {
@@ -38,6 +44,14 @@ public class Item {
                 (data[4]),
                 i_O_ID_LIST
         );
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public int getI_ID() {

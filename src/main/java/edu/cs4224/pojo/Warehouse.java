@@ -3,11 +3,14 @@ package edu.cs4224.pojo;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import edu.cs4224.Main;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.types.ObjectId;
 
 @BsonDiscriminator
 public class Warehouse {
 
+    private ObjectId id;
     private int W_ID;
     private String W_NAME;
     private String W_STREET_1;
@@ -31,7 +34,9 @@ public class Warehouse {
     }
 
     public static MongoCollection<Warehouse> getCollection(MongoDatabase db) {
-        return db.getCollection("warehouse", Warehouse.class);
+        return db.getCollection("warehouse", Warehouse.class)
+            .withReadConcern(Main.DEFAULT_READ_CONCERN)
+            .withWriteConcern(Main.DEFAULT_WRITE_CONCERN);
     }
 
     public static Warehouse fromCSV(String[] data) {
@@ -46,6 +51,14 @@ public class Warehouse {
                 Double.parseDouble(data[7]),
                 Double.parseDouble(data[8])
         );
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public int getW_ID() {

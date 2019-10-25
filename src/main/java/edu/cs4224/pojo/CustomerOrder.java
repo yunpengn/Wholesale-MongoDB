@@ -2,9 +2,12 @@ package edu.cs4224.pojo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
+import edu.cs4224.Main;
 import edu.cs4224.Utils;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.types.ObjectId;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +15,7 @@ import java.util.HashMap;
 @BsonDiscriminator
 public class CustomerOrder {
 
+    private ObjectId id;
     private int O_W_ID;
     private int O_D_ID;
     private int O_ID;
@@ -37,7 +41,9 @@ public class CustomerOrder {
     }
 
     public static MongoCollection<CustomerOrder> getCollection(MongoDatabase db) {
-        return db.getCollection("order", CustomerOrder.class);
+        return db.getCollection("order", CustomerOrder.class)
+            .withReadConcern(Main.DEFAULT_READ_CONCERN)
+            .withWriteConcern(Main.DEFAULT_WRITE_CONCERN);
     }
 
     public static CustomerOrder fromCSV(String[] data, HashMap<String, OrderLineInfo> o_L_INFO) {
@@ -52,6 +58,14 @@ public class CustomerOrder {
                 Utils.parseDateFromString(data[7]),
                 o_L_INFO
         );
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public int getO_W_ID() {

@@ -2,11 +2,24 @@ package edu.cs4224;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import edu.cs4224.pojo.*;
+
+import edu.cs4224.pojo.Customer;
+import edu.cs4224.pojo.CustomerOrder;
+import edu.cs4224.pojo.District;
+import edu.cs4224.pojo.Item;
+import edu.cs4224.pojo.OrderLineInfo;
+import edu.cs4224.pojo.Stock;
+import edu.cs4224.pojo.Warehouse;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
