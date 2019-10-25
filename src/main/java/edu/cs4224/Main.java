@@ -72,6 +72,7 @@ public class Main {
 
             // Dynamically defines the transaction type and passes in the parameters.
             BaseTransaction transaction;
+            System.out.println("transaction type is " + parameters[0]);
             switch (parameters[0]) {
                 case "N":
                     transaction = new NewOrderTransaction(db, parameters);
