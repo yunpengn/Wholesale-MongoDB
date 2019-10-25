@@ -84,7 +84,6 @@ public class NewOrderTransaction extends BaseTransaction {
       double totalAmount = 0;
       for (int i = 0; i < itemIds.size(); i++) {
           Stock stock = stockCollection.find(and(eq("s_W_ID", supplierWareHouse.get(i)), eq("s_I_ID", itemIds.get(i)))).first();
-          System.out.println(supplierWareHouse.get(i) + "   " + itemIds.get(i));
           int curQuantity = stock.getS_QUANTITY();
           int adjustedQuantity = curQuantity - quantity.get(i);
           adjustedQuantities.add(adjustedQuantity);
