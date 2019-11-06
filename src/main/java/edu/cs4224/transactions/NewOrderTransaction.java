@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -104,7 +105,7 @@ public class NewOrderTransaction extends BaseTransaction {
     AtomicReference<Double> totalAmount = new AtomicReference<>((double) 0);
     MongoCursor<Item> it =  itemCollection.find(in("i_ID", itemIds)).iterator();
 
-    ExecutorService executor = Executors.newFixedThreadPool(5);
+    CountDownLatch latch = new CountDownLatch(itemIds.size());
     for (int i = 0; i < itemIds.size(); i++) {
       int finalI = i;
       executor.execute(() -> {
@@ -147,6 +148,8 @@ public class NewOrderTransaction extends BaseTransaction {
         OrderLineInfo curInfo = new OrderLineInfo(itemIds.get(finalI), null, itemAmount, supplierWareHouse.get(finalI),
                 quantity.get(finalI));
         infos.put(String.valueOf(finalI + 1), curInfo);
+
+        latch.countDown();
       });
     }
 
@@ -156,10 +159,9 @@ public class NewOrderTransaction extends BaseTransaction {
     Warehouse warehouse = warehouseCollection.find(eq("w_ID", warehouseID)).first();
 
     try {
-      executor.shutdown();
-      executor.awaitTermination(10, TimeUnit.SECONDS);
-    } catch (Exception e) {
-      throw new RuntimeException("Executor await termination timeout"  + e);
+      latch.await();
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
     }
 
     customerOrderCollection.insertOne(order);

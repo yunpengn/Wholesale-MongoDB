@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -62,6 +64,8 @@ public class Main {
     }
 
     private void runTransactions(MongoDatabase db, String[] args) throws Exception {
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+
         // Updates the concern level setting.
         String consistencyLevel = args[1];
         System.out.println("The system has been started with consistency level " + consistencyLevel);
@@ -128,6 +132,8 @@ public class Main {
                 default:
                     throw new Exception("Unknown transaction types");
             }
+
+            transaction.setExecutor(executor);
 
             // Reads the data lines.
             int numOfDataLines = transaction.numOfDataLines();
