@@ -147,19 +147,4 @@ public class Warehouse {
     public void setW_YTD(double w_YTD) {
         W_YTD = w_YTD;
     }
-
-    @Override public String toString() {
-        return "Warehouse{" +
-            "id=" + id +
-            ", W_ID=" + W_ID +
-            ", W_NAME='" + W_NAME + '\'' +
-            ", W_STREET_1='" + W_STREET_1 + '\'' +
-            ", W_STREET_2='" + W_STREET_2 + '\'' +
-            ", W_CITY='" + W_CITY + '\'' +
-            ", W_STATE='" + W_STATE + '\'' +
-            ", W_ZIP='" + W_ZIP + '\'' +
-            ", W_TAX=" + W_TAX +
-            ", W_YTD=" + W_YTD +
-            '}';
-    }
 }
