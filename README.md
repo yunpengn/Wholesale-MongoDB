@@ -24,6 +24,21 @@ This is the Wholesale project implemented with MongoDB. It is part of the requir
 - Build Java package on all servers by `./scripts/experiment.sh build`.
 - Schedule experiments by `./scripts/experiment.sh run <num_of_java_instances> <concurrency_level>`.
     - There are 2 options for `<concurrency_level>`, `ONE_THREE` and `MAJORITY`.
+    
+## Analysis
+
+- First, download the error log files from all servers by:
+
+```bash
+scp -r cs4224f@xcnd25:/temp/cs4224f/Wholesale-MongoDB/log/*.err.log <desired_local_folder_path>
+scp -r cs4224f@xcnd26:/temp/cs4224f/Wholesale-MongoDB/log/*.err.log <desired_local_folder_path>
+scp -r cs4224f@xcnd27:/temp/cs4224f/Wholesale-MongoDB/log/*.err.log <desired_local_folder_path>
+scp -r cs4224f@xcnd28:/temp/cs4224f/Wholesale-MongoDB/log/*.err.log <desired_local_folder_path>
+scp -r cs4224f@xcnd29:/temp/cs4224f/Wholesale-MongoDB/log/*.err.log <desired_local_folder_path>
+```
+
+- Then, strip the downloaded files to keep the performance report only by `./scripts/start.sh strip <desired_local_folder_path>`.
+- Lastly, get overall statistics by `./scripts/start.sh stats <desired_local_folder_path> NC`.
 
 ## Licence
 
