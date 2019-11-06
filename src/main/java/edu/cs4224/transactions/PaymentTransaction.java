@@ -2,15 +2,16 @@ package edu.cs4224.transactions;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import edu.cs4224.Utils;
 import edu.cs4224.pojo.Customer;
 import edu.cs4224.pojo.District;
-import edu.cs4224.pojo.Item;
-import edu.cs4224.pojo.Stock;
 import edu.cs4224.pojo.Warehouse;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 
 public class PaymentTransaction extends BaseTransaction {
 

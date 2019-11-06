@@ -18,8 +18,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 
 /**
  * NewOrderTransaction is the transaction used to create a new order.

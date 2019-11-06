@@ -3,15 +3,20 @@ package edu.cs4224.transactions;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+
 import edu.cs4224.pojo.CustomerOrder;
 import edu.cs4224.pojo.Item;
 import edu.cs4224.pojo.OrderLineInfo;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
 
 public class RelatedCustomerTransaction extends BaseTransaction {
     private final int C_W_ID;
