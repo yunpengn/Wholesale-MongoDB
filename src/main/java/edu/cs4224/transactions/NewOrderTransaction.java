@@ -161,7 +161,7 @@ public class NewOrderTransaction extends BaseTransaction {
       executor.shutdown();
       executor.awaitTermination(10, TimeUnit.SECONDS);
     } catch (Exception e) {
-      throw new RuntimeException("Executor await termination timeout");
+      throw new RuntimeException("Executor await termination timeout"  + e);
     }
 
     totalAmount.set(totalAmount.get() * (1.0 + district.getD_TAX() + warehouse.getW_TAX()) * (1 - customer.getC_DISCOUNT()));
