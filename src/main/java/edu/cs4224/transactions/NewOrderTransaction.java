@@ -18,6 +18,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
@@ -64,8 +68,6 @@ public class NewOrderTransaction extends BaseTransaction {
   }
 
   private void createNewOrder(List<Integer> itemIds, List<Integer> supplierWareHouse, List<Integer> quantity) {
-    long txStart = System.nanoTime();
-
     MongoCollection<Customer> customerCollection = Customer.getCollection(db);
     MongoCollection<CustomerOrder> customerOrderCollection = CustomerOrder.getCollection(db);
     MongoCollection<District> districtCollection = District.getCollection(db);
@@ -95,84 +97,86 @@ public class NewOrderTransaction extends BaseTransaction {
     Date cur = new Date();
     CustomerOrder order = new CustomerOrder(warehouseID, districtID, next_o_id, customerID, null, itemIds.size(),
         isAllLocal, cur, infos);
+
     List<Item> items = new ArrayList<>();
     List<Double> itemsAmount = new ArrayList<>();
     List<Integer> adjustedQuantities = new ArrayList<>();
-    double totalAmount = 0;
+    AtomicReference<Double> totalAmount = new AtomicReference<>((double) 0);
     MongoCursor<Item> it =  itemCollection.find(in("i_ID", itemIds)).iterator();
-    for (int i = 0; i < itemIds.size(); i++) {
-      Stock stock = stockCollection.find(and(eq("s_W_ID", supplierWareHouse.get(i)), eq("s_I_ID", itemIds.get(i))))
-          .first();
-      System.out.printf("After find stock: %d.\n", System.nanoTime() - txStart);
-      txStart = System.nanoTime();
 
-      int curQuantity = stock.getS_QUANTITY();
-      int adjustedQuantity = curQuantity - quantity.get(i);
-      adjustedQuantities.add(adjustedQuantity);
-      if (adjustedQuantity < 10) {
-        adjustedQuantity += 100;
-      }
-      int isRemote = supplierWareHouse.get(i) == warehouseID ? 0 : 1;
-      stockCollection.updateOne(
-          eq("_id", stock.getId()),
-          combine(
-              set("s_QUANTITY", adjustedQuantity),
-              set("s_YTD", stock.getS_YTD() + quantity.get(i)),
-              set("s_ORDER_CNT", stock.getS_ORDER_CNT() + 1),
-              set("s_REMOTE_CNT", stock.getS_REMOTE_CNT() + isRemote)
-          )
-      );
-      System.out.printf("After update stock: %d.\n", System.nanoTime() - txStart);
-      txStart = System.nanoTime();
+    ExecutorService executor = Executors.newFixedThreadPool(5);
+    for (int i = 0; i < itemIds.size(); i++) {
+      int finalI = i;
+      executor.execute(() -> {
+        Stock stock = stockCollection.find(and(eq("s_W_ID", supplierWareHouse.get(finalI)), eq("s_I_ID", itemIds.get(finalI))))
+                .first();
+
+        int curQuantity = stock.getS_QUANTITY();
+        int adjustedQuantity = curQuantity - quantity.get(finalI);
+        adjustedQuantities.add(adjustedQuantity);
+        if (adjustedQuantity < 10) {
+          adjustedQuantity += 100;
+        }
+        int isRemote = supplierWareHouse.get(finalI) == warehouseID ? 0 : 1;
+        stockCollection.updateOne(
+                eq("_id", stock.getId()),
+                combine(
+                        set("s_QUANTITY", adjustedQuantity),
+                        set("s_YTD", stock.getS_YTD() + quantity.get(finalI)),
+                        set("s_ORDER_CNT", stock.getS_ORDER_CNT() + 1),
+                        set("s_REMOTE_CNT", stock.getS_REMOTE_CNT() + isRemote)
+                )
+        );
 
 //      Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
         Item curItem = it.next();
-        System.out.printf("After find item: %d.\n", System.nanoTime() - txStart);
-      txStart = System.nanoTime();
-      HashSet<String> curSet = curItem.getI_O_ID_LIST();
-      curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
-      itemCollection.updateOne(
-          eq("_id", curItem.getId()),
-          set("i_O_ID_LIST", curSet)
-      );
-      System.out.printf("After update item: %d.\n", System.nanoTime() - txStart);
-      txStart = System.nanoTime();
 
-      items.add(curItem);
-      double itemAmount = quantity.get(i) * curItem.getI_PRICE();
-      itemsAmount.add(itemAmount);
-      totalAmount += itemAmount;
+        HashSet<String> curSet = curItem.getI_O_ID_LIST();
+        curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
+        itemCollection.updateOne(
+                eq("_id", curItem.getId()),
+                set("i_O_ID_LIST", curSet)
+        );
 
-      OrderLineInfo curInfo = new OrderLineInfo(itemIds.get(i), null, itemAmount, supplierWareHouse.get(i),
-          quantity.get(i));
-      infos.put(String.valueOf(i + 1), curInfo);
+
+        items.add(curItem);
+        double itemAmount = quantity.get(finalI) * curItem.getI_PRICE();
+        itemsAmount.add(itemAmount);
+        totalAmount.updateAndGet(v -> (v + itemAmount));
+
+        OrderLineInfo curInfo = new OrderLineInfo(itemIds.get(finalI), null, itemAmount, supplierWareHouse.get(finalI),
+                quantity.get(finalI));
+        infos.put(String.valueOf(finalI + 1), curInfo);
+      });
     }
 
     customerOrderCollection.insertOne(order);
-    System.out.printf("After insert order: %d.\n", System.nanoTime() - txStart);
-    txStart = System.nanoTime();
 
     Customer customer = customerCollection.find(
         and(eq("c_W_ID", warehouseID), eq("c_D_ID", districtID), eq("c_ID", customerID))).first();
-    System.out.printf("After find customer: %d.\n", System.nanoTime() - txStart);
-    txStart = System.nanoTime();
 
     Warehouse warehouse = warehouseCollection.find(eq("w_ID", warehouseID)).first();
-    System.out.printf("After find warehouse: %d.\n", System.nanoTime() - txStart);
 
-    totalAmount = totalAmount * (1.0 + district.getD_TAX() + warehouse.getW_TAX()) * (1 - customer.getC_DISCOUNT());
+    totalAmount.set(totalAmount.get() * (1.0 + district.getD_TAX() + warehouse.getW_TAX()) * (1 - customer.getC_DISCOUNT()));
 
     System.out.println("Transaction Summary:");
     System.out.println(String.format("1. (W_ID: %d, D_ID: %d, C_ID, %d), C_LAST: %s, C_CREDIT: %s, C_DISCOUNT: %.4f",
         warehouseID, districtID, customerID, customer.getC_LAST(), customer.getC_CREDIT(), customer.getC_DISCOUNT()));
     System.out.println(String.format("2. W_TAX: %.4f, D_TAX: %.4f", warehouse.getW_TAX(), district.getD_TAX()));
     System.out.println(String.format("3. O_ID: %d, O_ENTRY_D: %s", next_o_id, Utils.formatter.format(cur)));
-    System.out.println(String.format("4. NUM_ITEMS: %s, TOTAL_AMOUNT: %.2f", numDataLines, totalAmount));
+    System.out.println(String.format("4. NUM_ITEMS: %s, TOTAL_AMOUNT: %.2f", numDataLines, totalAmount.get()));
     for (int i = 0; i < numDataLines; i++) {
       System.out.println(String.format(
           "\t ITEM_NUMBER: %d, I_NAME: %s, SUPPLIER_WAREHOUSE: %d, QUANTITY: %d, OL_AMOUNT: %.2f, S_QUANTITY: %d",
           itemIds.get(i), items.get(i).getI_NAME(), supplierWareHouse.get(i), quantity.get(i), itemsAmount.get(i),
           adjustedQuantities.get(i)));
+    }
+
+    executor.shutdown();
+    try {
+      executor.awaitTermination(10, TimeUnit.SECONDS);
+    } catch (Exception e) {
+      throw new RuntimeException("Executor await termination timeout");
     }
   }
 }
