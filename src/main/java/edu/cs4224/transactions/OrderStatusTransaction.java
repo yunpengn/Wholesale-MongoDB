@@ -35,6 +35,7 @@ public class OrderStatusTransaction extends BaseTransaction {
     if (currentCustomer == null) {
       throw new RuntimeException(String.format("Unable to find customerID=%d in warehouseID=%d districtID=%d", customerID, warehouseID, districtID));
     }
+    System.out.printf("Warehouse ID: %d and district ID: %d", warehouseID, districtID);
     System.out.printf("Customer name: %s %s %s, balance: %f\n",
         currentCustomer.getC_FIRST(),
         currentCustomer.getC_MIDDLE(),
