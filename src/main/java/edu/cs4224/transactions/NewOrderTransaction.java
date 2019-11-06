@@ -104,9 +104,13 @@ public class NewOrderTransaction extends BaseTransaction {
     int[] adjustedQuantities = new int[itemIds.size()];
     AtomicReference<Double> totalAmount = new AtomicReference<>((double) 0);
     MongoCursor<Item> it =  itemCollection.find(in("i_ID", itemIds)).iterator();
-    Item[] itemList = new Item[itemIds.size()];
 
-    for (int i = 0; it.hasNext(); i++) {
+    Item[] itemList = new Item[itemIds.size()];
+    for (int i = 0; i < itemIds.size(); i++) {
+      if (!it.hasNext()) {
+        throw new RuntimeException(String.format("We cannot find enough items. "
+            + "We expect %d items, but only find %d items.\n", itemIds.size(), i + 1));
+      }
       itemList[i] = it.next();
     }
 
