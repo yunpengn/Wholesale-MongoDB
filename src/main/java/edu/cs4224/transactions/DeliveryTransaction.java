@@ -65,12 +65,7 @@ public class DeliveryTransaction extends BaseTransaction {
           Filters.eq("c_W_ID", warehouseID),
           Filters.eq("c_d_ID", i),
           Filters.eq("c_ID", yetDeliverOrder.getO_C_ID())
-      ), Updates.inc("c_BALANCE", totalAmount));
-      customer.updateOne(Filters.and(
-          Filters.eq("c_W_ID", warehouseID),
-          Filters.eq("c_d_ID", i),
-          Filters.eq("c_ID", yetDeliverOrder.getO_C_ID())
-      ), Updates.inc("c_DELIVERY_CNT", 1));
+      ), Updates.combine(Updates.inc("c_BALANCE", totalAmount), Updates.inc("c_DELIVERY_CNT", 1)));
     }
   }
 }
