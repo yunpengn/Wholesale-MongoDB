@@ -13,11 +13,7 @@ import edu.cs4224.pojo.OrderLineInfo;
 import edu.cs4224.pojo.Stock;
 import edu.cs4224.pojo.Warehouse;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -103,11 +99,12 @@ public class NewOrderTransaction extends BaseTransaction {
     double[] itemsAmount = new double[itemIds.size()];
     int[] adjustedQuantities = new int[itemIds.size()];
     AtomicReference<Double> totalAmount = new AtomicReference<>((double) 0);
-    MongoCursor<Item> it =  itemCollection.find(in("i_ID", itemIds)).iterator();
-    Item[] itemList = new Item[itemIds.size()];
+    MongoCursor<Item> it = itemCollection.find(in("i_ID", itemIds)).iterator();
+    Map<Integer, Item> itemMap = new HashMap<>();
 
-    for (int i = 0; it.hasNext(); i++) {
-      itemList[i] = it.next();
+    while (it.hasNext()) {
+      Item next = it.next();
+      itemMap.put(next.getI_ID(), next);
     }
 
     CountDownLatch latch = new CountDownLatch(itemIds.size());
@@ -135,7 +132,7 @@ public class NewOrderTransaction extends BaseTransaction {
         );
 
 //      Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
-        Item curItem = itemList[finalI];
+        Item curItem = itemMap.get(itemIds.get(finalI));
 
         HashSet<String> curSet = curItem.getI_O_ID_LIST();
         curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
