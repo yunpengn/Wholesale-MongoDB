@@ -63,6 +63,7 @@ public class DeliveryTransaction extends BaseTransaction {
           Filters.eq("o_D_ID", i),
           Filters.eq("o_ID", orderID)
       ), Updates.combine(Updates.set("o_CARRIER_ID", carrierID), Updates.set("o_L_INFO", yetDeliverOrder.getO_L_INFO())));
+      System.out.println("Finished update order.");
 
       customer.updateOne(Filters.and(
           Filters.eq("c_W_ID", warehouseID),
@@ -74,6 +75,7 @@ public class DeliveryTransaction extends BaseTransaction {
           Filters.eq("c_d_ID", i),
           Filters.eq("c_ID", yetDeliverOrder.getO_C_ID())
       ), Updates.inc("c_DELIVERY_CNT", 1));
+      System.out.println("Finished update customer.");
     }
   }
 }
