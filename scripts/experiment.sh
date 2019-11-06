@@ -44,7 +44,7 @@ schedule_kill() {
   # Kills on each machine.
   for ((c=0; c<5; c++)); do
     machineID="xcnd$((25 + $c % 5))"
-    ssh $machineID "ps aux | grep -ie wholesale | grep -v grep | awk '{print $2}' | xargs kill -9"
+    ssh $machineID "ps aux | grep Wholesale-MongoDB-1.0-SNAPSHOT-all | grep -v grep | awk '{print $2}' | xargs kill -9"
     echo "Have killed on machine ID=${machineID}."
   done
 }
