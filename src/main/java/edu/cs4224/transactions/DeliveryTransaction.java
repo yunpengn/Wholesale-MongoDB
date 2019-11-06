@@ -50,12 +50,16 @@ public class DeliveryTransaction extends BaseTransaction {
         throw new RuntimeException(String.format("Unable to find order with warehouseID=%d districtID=%d orderID=%d", warehouseID, i, orderID));
       }
 
-      yetDeliverOrder.setO_CARRIER_ID(carrierID);
       double totalAmount = 0;
       for (OrderLineInfo orderLine: yetDeliverOrder.getO_L_INFO().values()) {
         orderLine.setOL_DELIVERY_D(new Date());
         totalAmount += orderLine.getOL_AMOUNT();
       }
+      order.updateOne(Filters.and(
+          Filters.eq("o_W_ID", warehouseID),
+          Filters.eq("o_D_ID", i),
+          Filters.eq("o_ID", orderID)
+      ), Updates.combine(Updates.set("o_CARRIER_ID", carrierID), Updates.set("o_L_INFO", yetDeliverOrder.getO_L_INFO())));
 
       customer.updateOne(Filters.and(
           Filters.eq("c_W_ID", warehouseID),

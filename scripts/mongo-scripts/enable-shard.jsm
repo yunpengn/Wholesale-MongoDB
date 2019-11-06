@@ -5,28 +5,31 @@ sh.enableSharding("wholesale");
 
 // Enables sharding on the per collection level.
 sh.shardCollection("wholesale.warehouse", {
-    w_id: 1
+    w_ID: 1
 });
 
 sh.shardCollection("wholesale.district", {
-    d_w_id: 1,
-    d_id: 1
+    d_W_ID: 1,
+    d_ID: 1
 });
 
 sh.shardCollection("wholesale.customer", {
-    c_w_id: 1,
-    c_d_id: 1
+    c_W_ID: 1,
+    c_D_ID: 1,
+    c_ID: 1
 });
 
 sh.shardCollection("wholesale.order", {
-    o_w_id: 1,
-    o_d_id: 1
+    o_W_ID: 1,
+    o_D_ID: 1,
+    o_ID: 1
 });
 
 sh.shardCollection("wholesale.item", {
-    i_id: 1
+    i_ID: 1
 });
 
 sh.shardCollection("wholesale.stock", {
-    s_w_id: 1
+    s_W_ID: 1,
+    s_I_ID: 1
 });

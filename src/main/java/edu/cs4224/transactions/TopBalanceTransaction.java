@@ -5,13 +5,15 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
+
 import edu.cs4224.pojo.Customer;
 import edu.cs4224.pojo.District;
 import edu.cs4224.pojo.Warehouse;
 
 import java.util.function.Consumer;
 
-import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
 
 public class TopBalanceTransaction extends BaseTransaction {
     public TopBalanceTransaction(final MongoDatabase db, final String[] parameters) {

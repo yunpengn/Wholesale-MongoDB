@@ -2,12 +2,24 @@ package edu.cs4224.transactions;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
-import edu.cs4224.pojo.*;
 
-import java.util.*;
+import edu.cs4224.pojo.Customer;
+import edu.cs4224.pojo.CustomerOrder;
+import edu.cs4224.pojo.District;
+import edu.cs4224.pojo.Item;
+import edu.cs4224.pojo.OrderLineInfo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
-import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
 
 public class PopularItemTransaction extends BaseTransaction {
 
