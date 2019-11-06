@@ -165,6 +165,7 @@ public class Main {
 
         // Closes the opened resources.
         scanner.close();
+        executor.shutdown();
     }
 
     private void generatePerformanceReport(List<Long> latency, long totalTime) {
