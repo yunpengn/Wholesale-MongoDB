@@ -145,7 +145,11 @@ public class Main {
             // Executes the transaction.
             txStart = System.nanoTime();
             System.out.printf("Transaction ID: %d\n", latency.size());
-            transaction.execute(dataLines);
+            try {
+                transaction.execute(dataLines);
+            } catch (Exception e) {
+                System.err.printf("Unable to execute transactionID=%d due to %s.\n", latency.size(), e);
+            }
             System.out.println("======================================================================");
             txEnd = System.nanoTime();
 
