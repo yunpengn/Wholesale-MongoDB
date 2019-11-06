@@ -46,7 +46,7 @@ public class FinalStateTransaction extends BaseTransaction {
       sum4 += record.getC_DELIVERY_CNT();
     }
     System.out.printf("SUM(c_BALANCE), SUM(c_YTD_PAYMENT), SUM(c_PAYMENT_CNT), SUM(c_DELIVERY_CNT) from customer: "
-        + "%d, %d, %d, %d", sum, sum2, sum3, sum4);
+        + "%d, %d, %d, %d\n", sum, sum2, sum3, sum4);
 
     MongoCursor<CustomerOrder> order = CustomerOrder.getCollection(db).find().iterator();
     int max = Integer.MIN_VALUE;
@@ -62,8 +62,8 @@ public class FinalStateTransaction extends BaseTransaction {
         sum2 += orderLine.getOL_QUANTITY();
       }
     }
-    System.out.printf("MAX(o_ID), SUM(o_OL_CNT) from order: %d, %d", max, sum);
-    System.out.printf("SUM(oL_AMOUNT), SUM(oL_QUANTITY) from orderLine: %f, %d", sum5, sum2);
+    System.out.printf("MAX(o_ID), SUM(o_OL_CNT) from order: %d, %d\n", max, sum);
+    System.out.printf("SUM(oL_AMOUNT), SUM(oL_QUANTITY) from orderLine: %f, %d\n", sum5, sum2);
 
     MongoCursor<Stock> stock = Stock.getCollection(db).find().iterator();
     sum = 0;
@@ -78,6 +78,6 @@ public class FinalStateTransaction extends BaseTransaction {
       sum3 += record.getS_REMOTE_CNT();
     }
     System.out.printf("SUM(s_QUANTITY), SUM(s_YTD), SUM(s_ORDER_CNT), SUM(s_REMOTE_CNT) from stock: "
-        + "%d, %f, %d, %d", sum, sum5, sum2, sum3);
+        + "%d, %f, %d, %d\n", sum, sum5, sum2, sum3);
   }
 }
