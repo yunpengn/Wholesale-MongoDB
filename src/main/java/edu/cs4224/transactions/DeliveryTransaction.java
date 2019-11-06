@@ -56,6 +56,8 @@ public class DeliveryTransaction extends BaseTransaction {
         orderLine.setOL_DELIVERY_D(new Date());
         totalAmount += orderLine.getOL_AMOUNT();
       }
+      System.out.printf("orderID=%d, the total amount is %f.\n", orderID, totalAmount);
+
       order.updateOne(Filters.and(
           Filters.eq("o_W_ID", warehouseID),
           Filters.eq("o_D_ID", i),
