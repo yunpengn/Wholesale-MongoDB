@@ -102,11 +102,7 @@ public class NewOrderTransaction extends BaseTransaction {
     MongoCursor<Item> it =  itemCollection.find(in("i_ID", itemIds)).iterator();
 
     Map<Integer, Item> itemMap = new HashMap<>();
-    for (int i = 0; i < itemIds.size(); i++) {
-      if (!it.hasNext()) {
-        throw new RuntimeException(String.format("We cannot find enough items. "
-            + "We expect %d items, but only find %d items.\n", itemIds.size(), i + 1));
-      }
+    while (it.hasNext()) {
       Item next = it.next();
       itemMap.put(next.getI_ID(), next);
     }
