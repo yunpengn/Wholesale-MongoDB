@@ -90,30 +90,39 @@ public class Main {
             String[] parameters = line.split(",");
 
             // Dynamically defines the transaction type and passes in the parameters.
+            System.out.println("\n======================================================================");
             BaseTransaction transaction;
             switch (parameters[0]) {
                 case "N":
+                    System.out.println("Transaction type: new order");
                     transaction = new NewOrderTransaction(db, parameters);
                     break;
                 case "P":
+                    System.out.println("Transaction type: payment");
                     transaction = new PaymentTransaction(db, parameters);
                     break;
                 case "D":
+                    System.out.println("Transaction type: delivery");
                     transaction = new DeliveryTransaction(db, parameters);
                     break;
                 case "O":
+                    System.out.println("Transaction type: order status");
                     transaction = new OrderStatusTransaction(db, parameters);
                     break;
                 case "S":
+                    System.out.println("Transaction type: stock level");
                     transaction = new StockLevelTransaction(db, parameters);
                     break;
                 case "I":
+                    System.out.println("Transaction type: popular item");
                     transaction = new PopularItemTransaction(db, parameters);
                     break;
                 case "T":
+                    System.out.println("Transaction type: top balance");
                     transaction = new TopBalanceTransaction(db, parameters);
                     break;
                 case "R":
+                    System.out.println("Transaction type: related customer");
                     transaction = new RelatedCustomerTransaction(db, parameters);
                     break;
                 default:
@@ -129,7 +138,6 @@ public class Main {
 
             // Executes the transaction.
             txStart = System.nanoTime();
-            System.out.println("\n======================================================================");
             System.out.printf("Transaction ID: %d\n", latency.size());
             transaction.execute(dataLines);
             System.out.println("======================================================================");
