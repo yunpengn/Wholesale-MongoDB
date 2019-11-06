@@ -120,8 +120,6 @@ public class Main {
                     throw new Exception("Unknown transaction types");
             }
 
-            transaction.setConsistencyLevel(consistencyLevel);
-
             // Reads the data lines.
             int numOfDataLines = transaction.numOfDataLines();
             String[] dataLines = new String[numOfDataLines];

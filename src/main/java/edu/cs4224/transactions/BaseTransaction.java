@@ -8,7 +8,6 @@ import com.mongodb.client.MongoDatabase;
 public abstract class BaseTransaction {
   private final String[] parameters;
   protected final MongoDatabase db;
-  private String consistencyLevel = "ALL_ONE";
 
   public BaseTransaction(final MongoDatabase db, final String[] parameters) {
     this.db = db;
@@ -30,8 +29,4 @@ public abstract class BaseTransaction {
    * @param dataLines are the lines of input data.
    */
   public abstract void execute(String[] dataLines);
-
-  public void setConsistencyLevel(String consistencyLevel) {
-    this.consistencyLevel = consistencyLevel;
-  }
 }
