@@ -21,6 +21,7 @@ import java.util.List;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.inc;
 import static com.mongodb.client.model.Updates.set;
 
 /**
@@ -77,7 +78,7 @@ public class NewOrderTransaction extends BaseTransaction {
       int next_o_id = district.getD_NEXT_O_ID();
       districtCollection.updateOne(
               eq("_id", district.getId()),
-              set("d_NEXT_O_ID", next_o_id + 1));
+              inc("d_NEXT_O_ID", 1));
 
       HashMap<String, OrderLineInfo> infos = new HashMap<>();
       Date cur = new Date();

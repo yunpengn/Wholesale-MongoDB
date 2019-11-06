@@ -58,13 +58,18 @@ public class OrderStatusTransaction extends BaseTransaction {
 
     // Gets each item in last order.
     for (OrderLineInfo orderLine: lastOrder.getO_L_INFO().values()) {
+      String deliveryDate = "unknown date";
+      if (orderLine.getOL_DELIVERY_D() != null) {
+        deliveryDate = orderLine.getOL_DELIVERY_D().toString();
+      }
+
       System.out.printf("Order line in last order item ID: %d, supply warehouse ID: %d, "
               + "quantity: %d, total price (amount): %f, delivery date: %s\n",
           orderLine.getOL_I_ID(),
           orderLine.getOL_SUPPLY_W_ID(),
           orderLine.getOL_QUANTITY(),
           orderLine.getOL_AMOUNT(),
-          orderLine.getOL_DELIVERY_D().toString());
+          deliveryDate);
     }
   }
 }
