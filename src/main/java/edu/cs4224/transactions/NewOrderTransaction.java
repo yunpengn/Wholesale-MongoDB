@@ -62,6 +62,8 @@ public class NewOrderTransaction extends BaseTransaction {
   }
 
   private void createNewOrder(List<Integer> itemIds, List<Integer> supplierWareHouse, List<Integer> quantity) {
+    long txStart = System.nanoTime();
+
       MongoCollection<Customer> customerCollection = Customer.getCollection(db);
       MongoCollection<CustomerOrder> customerOrderCollection = CustomerOrder.getCollection(db);
       MongoCollection<District> districtCollection = District.getCollection(db);
@@ -74,11 +76,15 @@ public class NewOrderTransaction extends BaseTransaction {
       for (int i = 0; i < supplierWareHouse.size(); i++) {
           if (supplierWareHouse.get(i) != warehouseID) isAllLocal = 0;
       }
+      System.out.printf("After find district: %d.\n", System.nanoTime() - txStart);
+      txStart = System.nanoTime();
 
       int next_o_id = district.getD_NEXT_O_ID();
       districtCollection.updateOne(
               eq("_id", district.getId()),
               inc("d_NEXT_O_ID", 1));
+    System.out.printf("After update district: %d.\n", System.nanoTime() - txStart);
+    txStart = System.nanoTime();
 
       HashMap<String, OrderLineInfo> infos = new HashMap<>();
       Date cur = new Date();
@@ -89,6 +95,9 @@ public class NewOrderTransaction extends BaseTransaction {
       double totalAmount = 0;
       for (int i = 0; i < itemIds.size(); i++) {
           Stock stock = stockCollection.find(and(eq("s_W_ID", supplierWareHouse.get(i)), eq("s_I_ID", itemIds.get(i)))).first();
+        System.out.printf("After find stock: %d.\n", System.nanoTime() - txStart);
+        txStart = System.nanoTime();
+
           int curQuantity = stock.getS_QUANTITY();
           int adjustedQuantity = curQuantity - quantity.get(i);
           adjustedQuantities.add(adjustedQuantity);
@@ -103,14 +112,21 @@ public class NewOrderTransaction extends BaseTransaction {
                     set("s_REMOTE_CNT", stock.getS_REMOTE_CNT() + isRemote)
                   )
           );
+        System.out.printf("After update stock: %d.\n", System.nanoTime() - txStart);
+        txStart = System.nanoTime();
 
           Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
+        System.out.printf("After find item: %d.\n", System.nanoTime() - txStart);
+        txStart = System.nanoTime();
           HashSet<String> curSet = curItem.getI_O_ID_LIST();
           curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
           itemCollection.updateOne(
                   eq("_id", curItem.getId()),
                   set("i_O_ID_LIST",  curSet)
           );
+        System.out.printf("After update item: %d.\n", System.nanoTime() - txStart);
+        txStart = System.nanoTime();
+
           items.add(curItem);
           double itemAmount = quantity.get(i) * curItem.getI_PRICE();
           itemsAmount.add(itemAmount);
@@ -120,9 +136,17 @@ public class NewOrderTransaction extends BaseTransaction {
           infos.put(String.valueOf(i + 1), curInfo);
       }
 
-//      customerOrderCollection.insertOne(order);
+      customerOrderCollection.insertOne(order);
+    System.out.printf("After insert order: %d.\n", System.nanoTime() - txStart);
+    txStart = System.nanoTime();
+
       Customer customer = customerCollection.find(and(eq("c_W_ID", warehouseID), eq("c_D_ID", districtID), eq("c_ID", customerID))).first();
+    System.out.printf("After find customer: %d.\n", System.nanoTime() - txStart);
+    txStart = System.nanoTime();
+
       Warehouse warehouse = warehouseCollection.find(eq("w_ID", warehouseID)).first();
+    System.out.printf("After find warehouse: %d.\n", System.nanoTime() - txStart);
+
       totalAmount = totalAmount * (1.0 + district.getD_TAX() + warehouse.getW_TAX()) * (1 - customer.getC_DISCOUNT());
 
       System.out.println("Transaction Summary:");
