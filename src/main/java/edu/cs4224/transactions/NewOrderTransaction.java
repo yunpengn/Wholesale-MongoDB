@@ -60,6 +60,7 @@ public class NewOrderTransaction extends BaseTransaction {
 
   private void createNewOrder(List<Integer> itemIds, List<Integer> supplierWareHouse, List<Integer> quantity) {
       MongoCollection<Customer> customerCollection = Customer.getCollection(db);
+      MongoCollection<CustomerOrder> customerOrderCollection = CustomerOrder.getCollection(db);
       MongoCollection<District> districtCollection = District.getCollection(db);
       MongoCollection<Stock> stockCollection = Stock.getCollection(db);
       MongoCollection<Item> itemCollection = Item.getCollection(db);
@@ -116,6 +117,7 @@ public class NewOrderTransaction extends BaseTransaction {
           infos.put(String.valueOf(i + 1), curInfo);
       }
 
+      customerOrderCollection.insertOne(order);
       Customer customer = customerCollection.find(and(eq("c_W_ID", warehouseID), eq("c_D_ID", districtID), eq("c_ID", customerID))).first();
       Warehouse warehouse = warehouseCollection.find(eq("w_ID", warehouseID)).first();
       totalAmount = totalAmount * (1.0 + district.getD_TAX() + warehouse.getW_TAX()) * (1 - customer.getC_DISCOUNT());
