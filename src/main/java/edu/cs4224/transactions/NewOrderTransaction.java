@@ -98,9 +98,9 @@ public class NewOrderTransaction extends BaseTransaction {
     CustomerOrder order = new CustomerOrder(warehouseID, districtID, next_o_id, customerID, null, itemIds.size(),
         isAllLocal, cur, infos);
 
-    List<Item> items = new ArrayList<>();
-    List<Double> itemsAmount = new ArrayList<>();
-    List<Integer> adjustedQuantities = new ArrayList<>();
+    Item[] items = new Item[itemIds.size()];
+    double[] itemsAmount = new double[itemIds.size()];
+    int[] adjustedQuantities = new int[itemIds.size()];
     AtomicReference<Double> totalAmount = new AtomicReference<>((double) 0);
     MongoCursor<Item> it =  itemCollection.find(in("i_ID", itemIds)).iterator();
 
@@ -113,7 +113,7 @@ public class NewOrderTransaction extends BaseTransaction {
 
         int curQuantity = stock.getS_QUANTITY();
         int adjustedQuantity = curQuantity - quantity.get(finalI);
-        adjustedQuantities.add(adjustedQuantity);
+        adjustedQuantities[finalI] = adjustedQuantity;
         if (adjustedQuantity < 10) {
           adjustedQuantity += 100;
         }
@@ -139,9 +139,9 @@ public class NewOrderTransaction extends BaseTransaction {
         );
 
 
-        items.add(curItem);
+        items[finalI] = curItem;
         double itemAmount = quantity.get(finalI) * curItem.getI_PRICE();
-        itemsAmount.add(itemAmount);
+        itemsAmount[finalI] = itemAmount;
         totalAmount.updateAndGet(v -> (v + itemAmount));
 
         OrderLineInfo curInfo = new OrderLineInfo(itemIds.get(finalI), null, itemAmount, supplierWareHouse.get(finalI),
@@ -157,6 +157,13 @@ public class NewOrderTransaction extends BaseTransaction {
 
     Warehouse warehouse = warehouseCollection.find(eq("w_ID", warehouseID)).first();
 
+    try {
+      executor.shutdown();
+      executor.awaitTermination(10, TimeUnit.SECONDS);
+    } catch (Exception e) {
+      throw new RuntimeException("Executor await termination timeout");
+    }
+
     totalAmount.set(totalAmount.get() * (1.0 + district.getD_TAX() + warehouse.getW_TAX()) * (1 - customer.getC_DISCOUNT()));
 
     System.out.println("Transaction Summary:");
@@ -168,15 +175,8 @@ public class NewOrderTransaction extends BaseTransaction {
     for (int i = 0; i < numDataLines; i++) {
       System.out.println(String.format(
           "\t ITEM_NUMBER: %d, I_NAME: %s, SUPPLIER_WAREHOUSE: %d, QUANTITY: %d, OL_AMOUNT: %.2f, S_QUANTITY: %d",
-          itemIds.get(i), items.get(i).getI_NAME(), supplierWareHouse.get(i), quantity.get(i), itemsAmount.get(i),
-          adjustedQuantities.get(i)));
-    }
-
-    try {
-      executor.shutdown();
-      executor.awaitTermination(10, TimeUnit.SECONDS);
-    } catch (Exception e) {
-      throw new RuntimeException("Executor await termination timeout");
+          itemIds.get(i), items[i].getI_NAME(), supplierWareHouse.get(i), quantity.get(i), itemsAmount[i],
+          adjustedQuantities[i]));
     }
   }
 }
