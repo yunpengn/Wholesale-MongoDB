@@ -150,8 +150,6 @@ public class NewOrderTransaction extends BaseTransaction {
       });
     }
 
-    customerOrderCollection.insertOne(order);
-
     Customer customer = customerCollection.find(
         and(eq("c_W_ID", warehouseID), eq("c_D_ID", districtID), eq("c_ID", customerID))).first();
 
@@ -163,6 +161,8 @@ public class NewOrderTransaction extends BaseTransaction {
     } catch (Exception e) {
       throw new RuntimeException("Executor await termination timeout"  + e);
     }
+
+    customerOrderCollection.insertOne(order);
 
     totalAmount.set(totalAmount.get() * (1.0 + district.getD_TAX() + warehouse.getW_TAX()) * (1 - customer.getC_DISCOUNT()));
 
