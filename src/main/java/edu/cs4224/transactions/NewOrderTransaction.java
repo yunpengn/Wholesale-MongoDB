@@ -172,8 +172,8 @@ public class NewOrderTransaction extends BaseTransaction {
           adjustedQuantities.get(i)));
     }
 
-    executor.shutdown();
     try {
+      executor.shutdown();
       executor.awaitTermination(10, TimeUnit.SECONDS);
     } catch (Exception e) {
       throw new RuntimeException("Executor await termination timeout");
