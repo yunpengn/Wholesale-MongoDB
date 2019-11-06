@@ -58,6 +58,11 @@ public class Main {
     case "loaddata":
       new DataLoader(db).loadData();
       break;
+    case "stats":
+      new StatisticsCalculator().run(args[1], Integer.parseInt(args[2]));
+      break;
+    case "strip":
+      new StatisticsCalculator().stripStatisticLog(args[1]);
     default:
       throw new RuntimeException("unknown argument");
     }
