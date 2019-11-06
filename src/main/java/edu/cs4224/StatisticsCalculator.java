@@ -11,7 +11,11 @@ import java.util.regex.Pattern;
  * A helper function to calculate overall statistics.
  */
 public class StatisticsCalculator {
+  private static final String REPORT_DELIMITER = "====";
 
+  /**
+   * Log formats.
+   */
   private static final String TotalNumberOfTransaction = "Total number of transactions processed: (\\d+)";
   private static final String TotalElapsedTime = "Total elapsed time: (\\d+)s";
   private static final String TransactionThroughput = "Transaction throughput: (\\d+) per second";
@@ -19,7 +23,6 @@ public class StatisticsCalculator {
   private static final String MedianTransactionLatency = "Median transaction latency: (\\d+)ms";
   private static final String NinetyFivePercentileTransactionLatency = "95th percentile transaction latency: (\\d+)ms";
   private static final String NinetyNinePercentileTransactionLatency = "99th percentile transaction latency: (\\d+)ms";
-
 
   public void run(String logPath, int NC) throws Exception {
     int totalNumberOfTransaction = 0;
@@ -52,17 +55,27 @@ public class StatisticsCalculator {
   public void stripStatisticLog(String logFolderPath) throws Exception {
     File file = new File(logFolderPath);
 
+    // Checks whether it is a folder.
     if (file.isDirectory()) {
-      for (File subFolder : file.listFiles()) {
+      File[] files = file.listFiles();
+      if (files == null) {
+        System.out.println("Skipped because there is no file inside " + logFolderPath);
+        return;
+      }
+
+      // Recursively processes all files & sub-folders.
+      for (File subFolder : files) {
         stripStatisticLog(subFolder.getAbsolutePath());
       }
-    } else {
-      String log = fetchLog(file);
-      String result = log.substring(log.indexOf("="), log.lastIndexOf("=") + 1);
+      return;
+    }
 
-      try (FileWriter writer = new FileWriter(file)) {
-        writer.write(result);
-      }
+    String log = fetchLog(file);
+    String result = log.substring(log.indexOf(REPORT_DELIMITER),
+        log.lastIndexOf(REPORT_DELIMITER) + REPORT_DELIMITER.length());
+
+    try (FileWriter writer = new FileWriter(file)) {
+      writer.write(result);
     }
   }
 

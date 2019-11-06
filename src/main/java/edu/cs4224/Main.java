@@ -45,28 +45,36 @@ public class Main {
   }
 
   private void init(String[] args) throws Exception {
-    MongoClient client = createDriver();
+    switch (args[0]) {
+    case "dryRun":
+      runTransactions(null, args, true);
+      return;
+    case "stats":
+      new StatisticsCalculator().run(args[1], Integer.parseInt(args[2]));
+      return;
+    case "strip":
+      new StatisticsCalculator().stripStatisticLog(args[1]);
+      return;
+    default:
+      System.out.println("Continues for actual tx execution.");
+    }
 
+    // Creates the connection.
+    MongoClient client = createDriver();
     MongoDatabase db = client.getDatabase("wholesale");
 
     switch (args[0]) {
     case "run":
       runTransactions(db, args, false);
       break;
-    case "dryRun":
-      runTransactions(db, args, true);
     case "loaddata":
       new DataLoader(db).loadData();
       break;
-    case "stats":
-      new StatisticsCalculator().run(args[1], Integer.parseInt(args[2]));
-      break;
-    case "strip":
-      new StatisticsCalculator().stripStatisticLog(args[1]);
     default:
       throw new RuntimeException("unknown argument");
     }
 
+    // Closes the connection.
     client.close();
   }
 
