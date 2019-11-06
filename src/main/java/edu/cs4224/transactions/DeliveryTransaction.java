@@ -49,7 +49,7 @@ public class DeliveryTransaction extends BaseTransaction {
       if (yetDeliverOrder == null) {
         throw new RuntimeException(String.format("Unable to find order with warehouseID=%d districtID=%d orderID=%d", warehouseID, i, orderID));
       }
-      System.out.printf("orderID=%d is made by customerID=%d", orderID, yetDeliverOrder.getO_C_ID());
+      System.out.printf("orderID=%d is made by customerID=%d.\n", orderID, yetDeliverOrder.getO_C_ID());
 
       double totalAmount = 0;
       for (OrderLineInfo orderLine: yetDeliverOrder.getO_L_INFO().values()) {
