@@ -104,6 +104,11 @@ public class NewOrderTransaction extends BaseTransaction {
     int[] adjustedQuantities = new int[itemIds.size()];
     AtomicReference<Double> totalAmount = new AtomicReference<>((double) 0);
     MongoCursor<Item> it =  itemCollection.find(in("i_ID", itemIds)).iterator();
+    Item[] itemList = new Item[itemIds.size()];
+
+    for (int i = 0; it.hasNext(); i++) {
+      itemList[i] = it.next();
+    }
 
     CountDownLatch latch = new CountDownLatch(itemIds.size());
     for (int i = 0; i < itemIds.size(); i++) {
@@ -130,7 +135,7 @@ public class NewOrderTransaction extends BaseTransaction {
         );
 
 //      Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
-        Item curItem = it.next();
+        Item curItem = itemList[finalI];
 
         HashSet<String> curSet = curItem.getI_O_ID_LIST();
         curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
