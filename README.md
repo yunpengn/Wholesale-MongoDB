@@ -15,6 +15,16 @@ This is the Wholesale project implemented with MongoDB. It is part of the requir
 - Click `Import Project` and select `build.gradle`.
 - Wait for Gradle to complete the setup.
 
+## Deployment
+
+- Install MongoDB, clone GitHub repository & download input data by `./scripts/setup.sh setup`.
+    - If you have run this script previously on the same set of servers, kill all MongoDB instances by `./scripts/setup.sh force_kill_all`.
+- Start new MongoDB instances and create cluster by `./scripts/setup.sh create_cluster`.
+- SSH into any of the servers and load data by `./scripts/start.sh loaddata`.
+- Build Java package on all servers by `./scripts/experiment.sh build`.
+- Schedule experiments by `./scripts/experiment.sh run <num_of_java_instances> <concurrency_level>`.
+    - There are 2 options for `<concurrency_level>`, `ONE_THREE` and `MAJORITY`.
+
 ## Licence
 
 [GNU General Public Licence 3.0](LICENSE)
