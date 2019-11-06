@@ -1,6 +1,7 @@
 package edu.cs4224.transactions;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 import edu.cs4224.Utils;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.inc;
 import static com.mongodb.client.model.Updates.set;
@@ -97,6 +99,7 @@ public class NewOrderTransaction extends BaseTransaction {
     List<Double> itemsAmount = new ArrayList<>();
     List<Integer> adjustedQuantities = new ArrayList<>();
     double totalAmount = 0;
+    MongoCursor<Item> it =  itemCollection.find(in("i_ID", itemIds)).iterator();
     for (int i = 0; i < itemIds.size(); i++) {
       Stock stock = stockCollection.find(and(eq("s_W_ID", supplierWareHouse.get(i)), eq("s_I_ID", itemIds.get(i))))
           .first();
@@ -122,8 +125,9 @@ public class NewOrderTransaction extends BaseTransaction {
       System.out.printf("After update stock: %d.\n", System.nanoTime() - txStart);
       txStart = System.nanoTime();
 
-      Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
-      System.out.printf("After find item: %d.\n", System.nanoTime() - txStart);
+//      Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
+        Item curItem = it.next();
+        System.out.printf("After find item: %d.\n", System.nanoTime() - txStart);
       txStart = System.nanoTime();
       HashSet<String> curSet = curItem.getI_O_ID_LIST();
       curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
