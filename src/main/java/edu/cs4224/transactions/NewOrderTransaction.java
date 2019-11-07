@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.mongodb.client.model.Filters.and;
@@ -113,46 +114,49 @@ public class NewOrderTransaction extends BaseTransaction {
     for (int i = 0; i < itemIds.size(); i++) {
       int finalI = i;
       executor.execute(() -> {
-        Stock stock = stockCollection.find(and(eq("s_W_ID", supplierWareHouse.get(finalI)), eq("s_I_ID", itemIds.get(finalI))))
-                .first();
+        try {
+            Stock stock = stockCollection.find(and(eq("s_W_ID", supplierWareHouse.get(finalI)), eq("s_I_ID", itemIds.get(finalI))))
+                    .first();
 
-        int curQuantity = stock.getS_QUANTITY();
-        int adjustedQuantity = curQuantity - quantity.get(finalI);
-        adjustedQuantities[finalI] = adjustedQuantity;
-        if (adjustedQuantity < 10) {
-          adjustedQuantity += 100;
+            int curQuantity = stock.getS_QUANTITY();
+            int adjustedQuantity = curQuantity - quantity.get(finalI);
+            adjustedQuantities[finalI] = adjustedQuantity;
+            if (adjustedQuantity < 10) {
+              adjustedQuantity += 100;
+            }
+            int isRemote = supplierWareHouse.get(finalI) == warehouseID ? 0 : 1;
+            stockCollection.updateOne(
+                    eq("_id", stock.getId()),
+                    combine(
+                            set("s_QUANTITY", adjustedQuantity),
+                            set("s_YTD", stock.getS_YTD() + quantity.get(finalI)),
+                            set("s_ORDER_CNT", stock.getS_ORDER_CNT() + 1),
+                            set("s_REMOTE_CNT", stock.getS_REMOTE_CNT() + isRemote)
+                    )
+            );
+
+  //        Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
+            Item curItem = itemMap.get(itemIds.get(finalI));
+
+            HashSet<String> curSet = curItem.getI_O_ID_LIST();
+            curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
+            itemCollection.updateOne(
+                    eq("_id", curItem.getId()),
+                    set("i_O_ID_LIST", curSet)
+            );
+
+
+            items[finalI] = curItem;
+            double itemAmount = quantity.get(finalI) * curItem.getI_PRICE();
+            itemsAmount[finalI] = itemAmount;
+            totalAmount.updateAndGet(v -> (v + itemAmount));
+
+            OrderLineInfo curInfo = new OrderLineInfo(itemIds.get(finalI), null, itemAmount, supplierWareHouse.get(finalI),
+                    quantity.get(finalI));
+            infos.put(String.valueOf(finalI + 1), curInfo);
+        } catch (Exception e) {
+          System.out.println("err occurs in executor" + e);
         }
-        int isRemote = supplierWareHouse.get(finalI) == warehouseID ? 0 : 1;
-        stockCollection.updateOne(
-                eq("_id", stock.getId()),
-                combine(
-                        set("s_QUANTITY", adjustedQuantity),
-                        set("s_YTD", stock.getS_YTD() + quantity.get(finalI)),
-                        set("s_ORDER_CNT", stock.getS_ORDER_CNT() + 1),
-                        set("s_REMOTE_CNT", stock.getS_REMOTE_CNT() + isRemote)
-                )
-        );
-
-//      Item curItem = itemCollection.find(eq("i_ID", itemIds.get(i))).first();
-        Item curItem = itemMap.get(itemIds.get(finalI));
-
-        HashSet<String> curSet = curItem.getI_O_ID_LIST();
-        curSet.add(warehouseID + "-" + districtID + "-" + next_o_id + "-" + customerID);
-        itemCollection.updateOne(
-                eq("_id", curItem.getId()),
-                set("i_O_ID_LIST", curSet)
-        );
-
-
-        items[finalI] = curItem;
-        double itemAmount = quantity.get(finalI) * curItem.getI_PRICE();
-        itemsAmount[finalI] = itemAmount;
-        totalAmount.updateAndGet(v -> (v + itemAmount));
-
-        OrderLineInfo curInfo = new OrderLineInfo(itemIds.get(finalI), null, itemAmount, supplierWareHouse.get(finalI),
-                quantity.get(finalI));
-        infos.put(String.valueOf(finalI + 1), curInfo);
-
         latch.countDown();
       });
     }
@@ -163,7 +167,7 @@ public class NewOrderTransaction extends BaseTransaction {
     Warehouse warehouse = warehouseCollection.find(eq("w_ID", warehouseID)).first();
 
     try {
-      latch.await();
+      latch.await(1, TimeUnit.MINUTES);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
