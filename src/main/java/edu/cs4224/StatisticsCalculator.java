@@ -68,8 +68,12 @@ public class StatisticsCalculator {
         stripStatisticLog(subFolder.getAbsolutePath());
       }
       return;
+    } else if (!logFolderPath.endsWith(".err.log")) {
+      System.out.println("Skipped because the file name is incorrect: " + logFolderPath);
+      return;
     }
 
+    System.out.println("Begin to strip log from " + logFolderPath);
     String log = fetchLog(file);
     String result = log.substring(log.indexOf(REPORT_DELIMITER),
         log.lastIndexOf(REPORT_DELIMITER) + REPORT_DELIMITER.length());
