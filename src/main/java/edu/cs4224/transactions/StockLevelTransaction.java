@@ -38,10 +38,12 @@ public class StockLevelTransaction extends BaseTransaction {
         Filters.eq("d_ID", districtID)
     )).first();
     if (currentDistrict == null) {
-      throw new RuntimeException(String.format("Unable to find district with warehouseID=%d districtID=%d", warehouseID, districtID));
+      throw new RuntimeException(
+          String.format("Unable to find district with warehouseID=%d districtID=%d", warehouseID, districtID));
     }
     int nextOrderID = currentDistrict.getD_NEXT_O_ID();
-    System.out.printf("The next available order number in warehouseID=%d districtID=%d is %d.\n", warehouseID, districtID, nextOrderID);
+    System.out.printf("The next available order number in warehouseID=%d districtID=%d is %d.\n", warehouseID,
+        districtID, nextOrderID);
 
     Set<Integer> itemIDs = new HashSet<>();
     order.find(Filters.and(
@@ -50,7 +52,7 @@ public class StockLevelTransaction extends BaseTransaction {
         Filters.gte("o_ID", nextOrderID - numOrders),
         Filters.lt("o_ID", nextOrderID)
     )).forEach((Consumer<? super CustomerOrder>) customerOrder -> {
-      for (OrderLineInfo orderLine: customerOrder.getO_L_INFO().values()) {
+      for (OrderLineInfo orderLine : customerOrder.getO_L_INFO().values()) {
         itemIDs.add(orderLine.getOL_I_ID());
       }
     });

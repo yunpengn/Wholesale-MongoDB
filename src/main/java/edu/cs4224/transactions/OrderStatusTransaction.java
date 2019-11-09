@@ -33,7 +33,9 @@ public class OrderStatusTransaction extends BaseTransaction {
         Filters.eq("c_ID", customerID)
     )).first();
     if (currentCustomer == null) {
-      throw new RuntimeException(String.format("Unable to find customerID=%d in warehouseID=%d districtID=%d", customerID, warehouseID, districtID));
+      throw new RuntimeException(
+          String.format("Unable to find customerID=%d in warehouseID=%d districtID=%d", customerID, warehouseID,
+              districtID));
     }
     System.out.printf("Warehouse ID: %d and district ID: %d\n", warehouseID, districtID);
     System.out.printf("Customer name: %s %s %s, balance: %f\n",
@@ -49,7 +51,9 @@ public class OrderStatusTransaction extends BaseTransaction {
         Filters.eq("o_C_ID", customerID)
     )).sort(Sorts.descending("o_ID")).first();
     if (lastOrder == null) {
-      throw new RuntimeException(String.format("Unable to find last order for customerID=%d in warehouseID=%d districtID=%d", customerID, warehouseID, districtID));
+      throw new RuntimeException(
+          String.format("Unable to find last order for customerID=%d in warehouseID=%d districtID=%d", customerID,
+              warehouseID, districtID));
     }
     System.out.printf("Customer's last order ID: %d, entry time: %s, carrier ID: %d\n",
         lastOrder.getO_ID(),
@@ -57,7 +61,7 @@ public class OrderStatusTransaction extends BaseTransaction {
         lastOrder.getO_CARRIER_ID());
 
     // Gets each item in last order.
-    for (OrderLineInfo orderLine: lastOrder.getO_L_INFO().values()) {
+    for (OrderLineInfo orderLine : lastOrder.getO_L_INFO().values()) {
       String deliveryDate = "unknown date";
       if (orderLine.getOL_DELIVERY_D() != null) {
         deliveryDate = orderLine.getOL_DELIVERY_D().toString();

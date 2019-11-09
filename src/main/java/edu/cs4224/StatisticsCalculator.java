@@ -27,28 +27,30 @@ public class StatisticsCalculator {
   public void run(String logPath, int NC) throws Exception {
     int totalNumberOfTransaction = 0;
     int totalExecutionTime = -1;
-    int transactionThroughput = 0;
+    double transactionThroughput = 0;
     int percentile95 = 0;
-    int minThroughput = Integer.MAX_VALUE;
-    int maxThroughput = Integer.MIN_VALUE;
+    double minThroughput = Double.MAX_VALUE;
+    double maxThroughput = Double.MIN_VALUE;
 
     for (int i = 1; i <= NC; i++) {
       String log = fetchLog(logPath, i);
 
       totalNumberOfTransaction += regex(log, TotalNumberOfTransaction);
       totalExecutionTime = Math.max(totalExecutionTime, regex(log, TotalElapsedTime));
-      transactionThroughput += regex(log, TransactionThroughput);
+
+      double currentThroughput = 1.0 * regex(log, TotalNumberOfTransaction) / regex(log, TotalElapsedTime);
+      transactionThroughput += currentThroughput;
       percentile95 += regex(log, NinetyFivePercentileTransactionLatency);
 
-      minThroughput = Math.min(minThroughput, regex(log, TransactionThroughput));
-      maxThroughput = Math.max(maxThroughput, regex(log, TransactionThroughput));
+      minThroughput = Math.min(minThroughput, currentThroughput);
+      maxThroughput = Math.max(maxThroughput, currentThroughput);
     }
 
     System.out.println("total number of transaction: " + totalNumberOfTransaction);
     System.out.println("total execution time: " + totalExecutionTime);
-    System.out.println("transaction throughput: " + (transactionThroughput * 1.0 / NC));
-    System.out.println("min transaction Throughput: " + minThroughput);
-    System.out.println("max transaction Throughput: " + maxThroughput);
+    System.out.printf("avg transaction throughput: %.3f\n", transactionThroughput * 1.0 / NC);
+    System.out.printf("min transaction Throughput: %.3f\n", minThroughput);
+    System.out.printf("max transaction Throughput: %.3f\n", maxThroughput);
     System.out.println("95th percentile latency: " + (percentile95 * 1.0 / NC));
   }
 

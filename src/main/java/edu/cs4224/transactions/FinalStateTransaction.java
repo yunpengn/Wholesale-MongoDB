@@ -57,7 +57,7 @@ public class FinalStateTransaction extends BaseTransaction {
       CustomerOrder record = order.next();
       max = Math.max(max, record.getO_ID());
       sum += record.getO_OL_CNT();
-      for (OrderLineInfo orderLine: record.getO_L_INFO().values()) {
+      for (OrderLineInfo orderLine : record.getO_L_INFO().values()) {
         sum5 += orderLine.getOL_AMOUNT();
         sum2 += orderLine.getOL_QUANTITY();
       }
